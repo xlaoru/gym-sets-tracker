@@ -16,3 +16,9 @@ export interface Exercises {
 export interface IProgramTableProps {
     program: Program;
 }
+
+export interface INewProgramObject {
+    dayName: string;
+    exercises: Exercises;
+    date: Date;
+}

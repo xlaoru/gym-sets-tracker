@@ -4,6 +4,7 @@ import ProgramBaseInfoInputs from '../components/ProgramBaseInfoInputs';
 import ProgramRepsInfoInputs from '../components/ProgramRepsInfoInputs';
 
 import { Exercises, ExerciseSet } from '../utils/models';
+import { createProgram } from "../services";
 
 export default function ProgramFormPage() {
     const [isBaseInfoFilled, setBaseInfoFilled] = useState(false)
@@ -25,6 +26,11 @@ export default function ProgramFormPage() {
 
     function handleSubmit(e: any) {
         e.preventDefault();
+        createProgram({
+            dayName: e.target.elements[0].value,
+            exercises: exercises,
+            date: new Date()
+        })
         console.log(e.target.elements[0].value, exercises);
     }
 
