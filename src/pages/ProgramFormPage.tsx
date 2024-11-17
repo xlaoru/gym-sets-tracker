@@ -25,13 +25,11 @@ export default function ProgramFormPage() {
     };
 
     function handleSubmit(e: any) {
-        e.preventDefault();
         createProgram({
             dayName: e.target.elements[0].value,
             exercises: exercises,
             date: new Date()
         })
-        console.log(e.target.elements[0].value, exercises);
     }
 
     return (

@@ -1,4 +1,5 @@
 export interface Program {
+    _id?: string;
     dayName: string;
     exercises: Exercises;
     date: Date;

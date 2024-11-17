@@ -1,3 +1,4 @@
+import { deleteProgram, editProgram } from "../services";
 import { IProgramTableProps } from "../utils/models";
 
 export default function ProgramTable({ program }: IProgramTableProps) {
@@ -22,6 +23,7 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                     </tbody>
                 ))}
             </table>
+            <button onClick={() => { deleteProgram(program._id || ""); window.location.reload(); }}>DELETE</button>
         </>
     )
 }
