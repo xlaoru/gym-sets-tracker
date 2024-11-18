@@ -35,7 +35,17 @@ export default function ProgramFormPage() {
     return (
         <div className="container-absolute-center">
             <form className="form" onSubmit={handleSubmit}>
-                <input type="text" placeholder="Day Name" style={{ padding: "8px 8px" }} />
+                <input
+                    type="text"
+                    placeholder="Day Name"
+                    style={{ padding: "8px 8px" }}
+                    list="program-types"
+                />
+                <datalist id="program-types">
+                    <option value="Ноги + Біцепси">Ноги + Біцепси</option>
+                    <option value="Груди + Плечі">Груди + Плечі</option>
+                    <option value="Спина + Тріцепси">Спина + Тріцепси</option>
+                </datalist>
                 {
                     isBaseInfoFilled
                         ?
