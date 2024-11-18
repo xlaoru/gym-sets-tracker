@@ -33,9 +33,9 @@ export default function ProgramFormPage() {
     }
 
     return (
-        <div className="container">
+        <div className="container-absolute-center">
             <form className="form" onSubmit={handleSubmit}>
-                <input type="text" placeholder="Day Name" />
+                <input type="text" placeholder="Day Name" style={{ padding: "8px 8px" }} />
                 {
                     isBaseInfoFilled
                         ?
@@ -53,11 +53,11 @@ export default function ProgramFormPage() {
                                     })
                                 }
                                 <ProgramBaseInfoInputs exercises={exercises} setExercise={setExercise} />
-                                <button type="button" onClick={() => setBaseInfoFilled(!isBaseInfoFilled)}>Next</button>
+                                <button type="button" onClick={() => { setBaseInfoFilled(!isBaseInfoFilled); localStorage.setItem("exercises", JSON.stringify(exercises)) }} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
                             </div>
                         )
                 }
             </form>
-        </div>
+        </div >
     );
 }

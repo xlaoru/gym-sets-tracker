@@ -17,7 +17,12 @@ export default function ProgramListPage() {
 
     return (
         <>
-            {programs && programs.map((program, index) => <div key={index}><ProgramTable program={program} /></div>)}
+            {programs && programs.map((program, index) => (
+                <div className="container" key={index}>
+                    <ProgramTable program={program} />
+                    <hr className="separator" />
+                </div>
+            ))}
         </>
     )
 }

@@ -1,13 +1,18 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 import ProgramFormPage from './pages/ProgramFormPage';
-import './styles/App.css';
 import ProgramListPage from './pages/ProgramListPage';
+
+import './styles/App.css';
 
 function App() {
   return (
-    <div>
-      <ProgramListPage />
-      <ProgramFormPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ProgramListPage />} />
+        <Route path="/add" element={<ProgramFormPage />} />
+      </Routes>
+    </Router>
   )
 }
 

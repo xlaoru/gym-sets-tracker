@@ -1,11 +1,20 @@
 import { deleteProgram, editProgram } from "../services";
 import { IProgramTableProps } from "../utils/models";
 
+import { Trash } from 'lucide-react';
+
 export default function ProgramTable({ program }: IProgramTableProps) {
     return (
         <>
             <table>
-                <caption>{program.dayName} | {new Date(program.date).toLocaleDateString()}</caption>
+                <caption>
+                    <div className="container-space-between">
+                        {program.dayName} | {new Date(program.date).toLocaleDateString('en-GB').replace(/\//g, '.')}
+                        <button className="icon-button" onClick={() => { deleteProgram(program._id || ""); window.location.reload(); }}>
+                            <Trash color="#d03533" />
+                        </button>
+                    </div>
+                </caption>
                 {Object.keys(program.exercises).map((exerciseName, index) => (
                     <tbody key={index}>
                         <tr>
@@ -23,7 +32,7 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                     </tbody>
                 ))}
             </table>
-            <button onClick={() => { deleteProgram(program._id || ""); window.location.reload(); }}>DELETE</button>
+
         </>
     )
 }
