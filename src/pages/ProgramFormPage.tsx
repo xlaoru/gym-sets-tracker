@@ -1,17 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useNavigate } from "react-router-dom";
 
 import ProgramBaseInfoInputs from '../components/ProgramBaseInfoInputs';
 import ProgramRepsInfoInputs from '../components/ProgramRepsInfoInputs';
 
-import { Exercises, ExerciseSet } from '../utils/models';
+import { Exercises, ExerciseSet, Program } from '../utils/models';
 import { createProgram } from "../services";
-import { useNavigate } from "react-router-dom";
 
 export default function ProgramFormPage() {
     const [isBaseInfoFilled, setBaseInfoFilled] = useState(false)
     const [exercises, setExercise] = useState<Exercises>({})
 
+    const [programName, setProgramName] = useState<string>("")
+
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const preProgramInfo: Program = {
+            dayName: programName,
+            exercises: exercises,
+            date: new Date()
+        }
+        localStorage.setItem("exercises", JSON.stringify(preProgramInfo))
+    }, [exercises, programName, setExercise, setProgramName])
 
     const handleChange = (exerciseName: string, setIndex: number, field: keyof ExerciseSet, value: string) => {
         setExercise((prevExercises) => {
@@ -23,6 +35,7 @@ export default function ProgramFormPage() {
                 newExercises[exerciseName][setIndex] = { reps: 0, weight: 0 };
             }
             newExercises[exerciseName][setIndex][field] = Number(value);
+            // setExercisesInLocalStorage(newExercises)
             return newExercises;
         });
     };
@@ -35,6 +48,7 @@ export default function ProgramFormPage() {
             date: new Date()
         }).then(() => {
             navigate("/")
+            localStorage.removeItem("exercises")
         })
     }
 
@@ -46,6 +60,8 @@ export default function ProgramFormPage() {
                     placeholder="Day Name"
                     style={{ padding: "8px 8px" }}
                     list="program-types"
+                    value={programName}
+                    onChange={(e) => setProgramName(e.target.value)}
                 />
                 <datalist id="program-types">
                     <option value="Ноги + Біцепси">Ноги + Біцепси</option>
@@ -71,7 +87,7 @@ export default function ProgramFormPage() {
                                     })
                                 }
                                 <ProgramBaseInfoInputs exercises={exercises} setExercise={setExercise} />
-                                <button type="button" onClick={() => { setBaseInfoFilled(!isBaseInfoFilled); localStorage.setItem("exercises", JSON.stringify(exercises)) }} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
+                                <button type="button" onClick={() => { setBaseInfoFilled(!isBaseInfoFilled);/*  setExercisesInLocalStorage(exercises) */ }} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
                             </div>
                         )
                 }

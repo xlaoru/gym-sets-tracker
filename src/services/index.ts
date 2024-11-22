@@ -1,7 +1,8 @@
 import axios from "axios";
 import { INewProgramObject } from "../utils/models";
 
-const PORT = "https://gym-sets-tracker-server-1.onrender.com"
+const PORT = "http://localhost:3001";
+// const PORT = "https://gym-sets-tracker-server-1.onrender.com"
 
 export function getPrograms() {
   return axios.get(`${PORT}/api/programs`);
