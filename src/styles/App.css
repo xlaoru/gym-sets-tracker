@@ -40,10 +40,11 @@ p {
 
 .form {
   background-color: #fff;
-  padding: 24px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  margin: 0 12px;
   outline: none;
   border: none;
   border-radius: 4px;
@@ -52,6 +53,7 @@ p {
 
 .form input {
   padding: 4px 8px;
+  width: 50%;
   border: 1px solid #dddddd;
   border-radius: 4px;
   outline: none;
