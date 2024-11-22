@@ -35,7 +35,6 @@ export default function ProgramFormPage() {
                 newExercises[exerciseName][setIndex] = { reps: 0, weight: 0 };
             }
             newExercises[exerciseName][setIndex][field] = Number(value);
-            // setExercisesInLocalStorage(newExercises)
             return newExercises;
         });
     };
@@ -87,7 +86,7 @@ export default function ProgramFormPage() {
                                     })
                                 }
                                 <ProgramBaseInfoInputs exercises={exercises} setExercise={setExercise} />
-                                <button type="button" onClick={() => { setBaseInfoFilled(!isBaseInfoFilled);/*  setExercisesInLocalStorage(exercises) */ }} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
+                                <button type="button" onClick={() => setBaseInfoFilled(!isBaseInfoFilled)} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
                             </div>
                         )
                 }
