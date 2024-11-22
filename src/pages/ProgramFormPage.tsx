@@ -5,10 +5,13 @@ import ProgramRepsInfoInputs from '../components/ProgramRepsInfoInputs';
 
 import { Exercises, ExerciseSet } from '../utils/models';
 import { createProgram } from "../services";
+import { useNavigate } from "react-router-dom";
 
 export default function ProgramFormPage() {
     const [isBaseInfoFilled, setBaseInfoFilled] = useState(false)
     const [exercises, setExercise] = useState<Exercises>({})
+
+    const navigate = useNavigate()
 
     const handleChange = (exerciseName: string, setIndex: number, field: keyof ExerciseSet, value: string) => {
         setExercise((prevExercises) => {
@@ -25,10 +28,13 @@ export default function ProgramFormPage() {
     };
 
     function handleSubmit(e: any) {
+        e.preventDefault()
         createProgram({
             dayName: e.target.elements[0].value,
             exercises: exercises,
             date: new Date()
+        }).then(() => {
+            navigate("/")
         })
     }
 
@@ -43,7 +49,9 @@ export default function ProgramFormPage() {
                 />
                 <datalist id="program-types">
                     <option value="Ноги + Біцепси">Ноги + Біцепси</option>
-                    <option value="Груди + Плечі">Груди + Плечі</option>
+                    <option value="Груди (верх) + Плечі">Груди (верх) + Плечі</option>
+                    <option value="Груди (середина) + Плечі">Груди (середина) + Плечі</option>
+                    <option value="Груди (низ) + Плечі">Груди (низ) + Плечі</option>
                     <option value="Спина + Тріцепси">Спина + Тріцепси</option>
                 </datalist>
                 {
