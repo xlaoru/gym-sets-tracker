@@ -82,7 +82,12 @@ export default function ProgramFormPage() {
                             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                                 {
                                     Object.keys(exercises).map((exercise, index) => {
-                                        return <input key={index} defaultValue={exercise} />
+                                        return (
+                                            <div key={index}>
+                                                <h4 style={{ margin: 0 }}>{exercise}</h4>
+                                                <hr style={{ border: "1.5px solid #1e1e1e" }} />
+                                            </div>
+                                        )
                                     })
                                 }
                                 <ProgramBaseInfoInputs exercises={exercises} setExercise={setExercise} />

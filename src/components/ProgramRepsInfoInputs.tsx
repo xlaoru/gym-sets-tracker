@@ -6,7 +6,7 @@ export default function ProgramRepsInfoInputs({ exercises, handleChange }: { exe
             {Object.keys(exercises).map((exercise, index) => {
                 return (
                     <div key={index}>
-                        <input type="text" placeholder="Exercise Name" defaultValue={exercise} style={{ margin: "10px 0" }} />
+                        <h3 style={{ margin: "10px 0" }}>{exercise}</h3>
                         <div style={{ display: "flex", gap: "4px" }}>
                             <input style={{ width: "50%" }} type="text" placeholder="Weight" name={`${exercise}-${index}-weight-1`} onChange={(e) => handleChange(exercise, 0, 'weight', e.target.value)} />
                             <input style={{ width: "50%" }} type="text" placeholder="Reps" name={`${exercise}-${index}-rep-1`} onChange={(e) => handleChange(exercise, 0, 'reps', e.target.value)} />
