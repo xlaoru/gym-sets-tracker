@@ -8,7 +8,6 @@ import { createProgram } from "../services";
 
 export default function PreEditPage() {
     const program: Program = JSON.parse(localStorage.getItem("exercises") as string);
-
     const [exercises, setExercises] = useState<Exercises>(program.exercises)
 
     const navigate = useNavigate()
@@ -20,7 +19,7 @@ export default function PreEditPage() {
             date: new Date()
         }
         localStorage.setItem("exercises", JSON.stringify(preProgramInfo))
-    })
+    }, [exercises, program.dayName])
 
     function handleChange(exerciseName: string, setIndex: number, field: keyof ExerciseSet, value: string) {
         setExercises((prevExercises) => {
@@ -50,10 +49,16 @@ export default function PreEditPage() {
 
     return (
         <div className="container-absolute-center">
-            <form className="form" onSubmit={handleSubmit}>
-                <h3>{program.dayName}</h3>
-                <ProgramRepsInfoInputs exercises={program.exercises} handleChange={handleChange} />
-            </form>
+            {
+                program.dayName === ""
+                    ? <p>No exercises</p>
+                    : (
+                        <form className="form" onSubmit={handleSubmit}>
+                            <h3>{program.dayName}</h3>
+                            <ProgramRepsInfoInputs exercises={program.exercises} handleChange={handleChange} />
+                        </form>
+                    )
+            }
         </div>
     )
 }
