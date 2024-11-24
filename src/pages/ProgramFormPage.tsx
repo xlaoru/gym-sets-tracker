@@ -10,7 +10,7 @@ import { createProgram } from "../services";
 
 export default function ProgramFormPage() {
     const [isBaseInfoFilled, setBaseInfoFilled] = useState(false)
-    const [exercises, setExercise] = useState<Exercises>({})
+    const [exercises, setExercises] = useState<Exercises>({})
 
     const [programName, setProgramName] = useState<string>("")
 
@@ -23,10 +23,10 @@ export default function ProgramFormPage() {
             date: new Date()
         }
         localStorage.setItem("exercises", JSON.stringify(preProgramInfo))
-    }, [exercises, programName, setExercise, setProgramName])
+    }, [exercises, programName, setExercises, setProgramName])
 
     const handleChange = (exerciseName: string, setIndex: number, field: keyof ExerciseSet, value: string) => {
-        setExercise((prevExercises) => {
+        setExercises((prevExercises) => {
             const newExercises = { ...prevExercises };
             if (!newExercises[exerciseName]) {
                 newExercises[exerciseName] = [];
@@ -90,7 +90,7 @@ export default function ProgramFormPage() {
                                         )
                                     })
                                 }
-                                <ProgramBaseInfoInputs exercises={exercises} setExercise={setExercise} />
+                                <ProgramBaseInfoInputs exercises={exercises} setExercises={setExercises} />
                                 <button type="button" onClick={() => setBaseInfoFilled(!isBaseInfoFilled)} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
                             </div>
                         )

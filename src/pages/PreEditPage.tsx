@@ -8,7 +8,7 @@ import { createProgram } from "../services";
 
 export default function PreEditPage() {
     const program: Program = JSON.parse(localStorage.getItem("exercises") as string);
-    const [exercises, setExercises] = useState<Exercises>(program.exercises)
+    const [exercises, setExercisess] = useState<Exercises>(program.exercises)
 
     const navigate = useNavigate()
 
@@ -22,7 +22,7 @@ export default function PreEditPage() {
     }, [exercises, program.dayName])
 
     function handleChange(exerciseName: string, setIndex: number, field: keyof ExerciseSet, value: string) {
-        setExercises((prevExercises) => {
+        setExercisess((prevExercises) => {
             const newExercises = { ...prevExercises };
             if (!newExercises[exerciseName]) {
                 newExercises[exerciseName] = [];

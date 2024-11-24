@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Exercises } from '../utils/models'
 
-export default function ProgramBaseInfoInputs({ exercises, setExercise }: { exercises: Exercises, setExercise: any }) {
+export default function ProgramBaseInfoInputs({ exercises, setExercises }: { exercises: Exercises, setExercises: any }) {
     const [inputValue, setInputValue] = useState("")
 
     const addExercise = () => {
-        setExercise({
+        setExercises({
             ...exercises, [inputValue]: [
                 { weight: 0, reps: 0 },
                 { weight: 0, reps: 0 },
