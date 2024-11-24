@@ -7,22 +7,14 @@ export default function ProgramRepsInfoInputs({ exercises, handleChange }: { exe
                 return (
                     <div key={index}>
                         <h3 style={{ margin: "10px 0" }}>{exercise}</h3>
-                        <div style={{ display: "flex", gap: "4px" }}>
-                            <input style={{ width: "50%" }} type="text" placeholder="Weight" name={`${exercise}-${index}-weight-1`} onChange={(e) => handleChange(exercise, 0, 'weight', e.target.value)} />
-                            <input style={{ width: "50%" }} type="text" placeholder="Reps" name={`${exercise}-${index}-rep-1`} onChange={(e) => handleChange(exercise, 0, 'reps', e.target.value)} />
-                        </div>
-                        <div style={{ display: "flex", gap: "4px" }}>
-                            <input style={{ width: "50%" }} type="text" placeholder="Weight" name={`${exercise}-${index}-weight-2`} onChange={(e) => handleChange(exercise, 1, 'weight', e.target.value)} />
-                            <input style={{ width: "50%" }} type="text" placeholder="Reps" name={`${exercise}-${index}-rep-2`} onChange={(e) => handleChange(exercise, 1, 'reps', e.target.value)} />
-                        </div>
-                        <div style={{ display: "flex", gap: "4px" }}>
-                            <input style={{ width: "50%" }} type="text" placeholder="Weight" name={`${exercise}-${index}-weight-3`} onChange={(e) => handleChange(exercise, 2, 'weight', e.target.value)} />
-                            <input style={{ width: "50%" }} type="text" placeholder="Reps" name={`${exercise}-${index}-rep-3`} onChange={(e) => handleChange(exercise, 2, 'reps', e.target.value)} />
-                        </div>
-                        <div style={{ display: "flex", gap: "4px" }}>
-                            <input style={{ width: "50%" }} type="text" placeholder="Weight" name={`${exercise}-${index}-weight-4`} onChange={(e) => handleChange(exercise, 3, 'weight', e.target.value)} />
-                            <input style={{ width: "50%" }} type="text" placeholder="Reps" name={`${exercise}-${index}-rep-4`} onChange={(e) => handleChange(exercise, 3, 'reps', e.target.value)} />
-                        </div>
+                        {Array.from({ length: 4 }, (_, i) => {
+                            return (
+                                <div style={{ display: "flex", gap: "4px" }} key={i}>
+                                    <input defaultValue={exercises[exercise][i].weight ?? ""} style={{ width: "50%" }} type="text" placeholder="Weight" name={`${exercise}-${index}-weight-${i + 1}`} onChange={(e) => handleChange(exercise, i, 'weight', e.target.value)} />
+                                    <input defaultValue={exercises[exercise][i].reps ?? ""} style={{ width: "50%" }} type="text" placeholder="Reps" name={`${exercise}-${index}-rep-${i + 1}`} onChange={(e) => handleChange(exercise, i, 'reps', e.target.value)} />
+                                </div>
+                            )
+                        })}
                     </div>
                 )
             })}
