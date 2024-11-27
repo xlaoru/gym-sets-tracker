@@ -6,7 +6,11 @@ import { Exercises, Program, ExerciseSet } from "../utils/models";
 
 import { createProgram } from "../services";
 
-export default function PreEditPage() {
+interface IPreEditPageProps {
+    setPreEditInfo: (condition: boolean) => void
+}
+
+export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
     const program: Program = JSON.parse(localStorage.getItem("exercises") as string);
     const [exercises, setExercisess] = useState<Exercises>(program.exercises)
 
@@ -44,6 +48,7 @@ export default function PreEditPage() {
         }).then(() => {
             navigate("/")
             localStorage.removeItem("exercises")
+            setPreEditInfo(false)
         })
     }
 

@@ -8,7 +8,11 @@ import ProgramRepsInfoInputs from '../components/ProgramRepsInfoInputs';
 import { Exercises, ExerciseSet, Program } from '../utils/models';
 import { createProgram } from "../services";
 
-export default function ProgramFormPage() {
+interface IProgramFormPageProps {
+    setPreEditInfo: (condition: boolean) => void
+}
+
+export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProps) {
     const [isBaseInfoFilled, setBaseInfoFilled] = useState(false)
     const [exercises, setExercises] = useState<Exercises>({})
 
@@ -48,6 +52,7 @@ export default function ProgramFormPage() {
         }).then(() => {
             navigate("/")
             localStorage.removeItem("exercises")
+            setPreEditInfo(false)
         })
     }
 
@@ -91,7 +96,7 @@ export default function ProgramFormPage() {
                                     })
                                 }
                                 <ProgramBaseInfoInputs exercises={exercises} setExercises={setExercises} />
-                                <button type="button" onClick={() => setBaseInfoFilled(!isBaseInfoFilled)} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
+                                <button type="button" onClick={() => { setBaseInfoFilled(!isBaseInfoFilled); setPreEditInfo(true) }} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
                             </div>
                         )
                 }
