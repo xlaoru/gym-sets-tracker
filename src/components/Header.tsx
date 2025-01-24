@@ -1,9 +1,7 @@
 import { Pencil, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-interface IHeaderProps {
-    hasPreEditInfo: boolean
-}
+import { IHeaderProps } from "../utils/models";
 
 export default function Header({ hasPreEditInfo }: IHeaderProps) {
     const navigate = useNavigate()

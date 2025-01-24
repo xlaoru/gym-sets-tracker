@@ -14,7 +14,28 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                     </button>
                 </div>
             </caption>
-            {Object.keys(program.exercises).map((exerciseName, index) => (
+            {program.exercises.map((exercise, index) => (
+                <tbody key={index}>
+                    <tr>
+                        <th>{exercise.name}</th>
+                        <th>Weight (kg)</th>
+                        <th>Reps</th>
+                    </tr>
+                    {exercise.sets.map((exerciseSet, index) => (
+                        <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{exerciseSet.weight}</td>
+                            <td>{exerciseSet.reps}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            ))}
+        </table>
+    )
+}
+
+/* 
+.map((exerciseName, index) => (
                 <tbody key={index}>
                     <tr>
                         <th>{exerciseName}</th>
@@ -29,7 +50,5 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                         </tr>
                     ))}
                 </tbody>
-            ))}
-        </table>
-    )
-}
+            ))
+*/

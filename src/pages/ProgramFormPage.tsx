@@ -1,72 +1,36 @@
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
+import ExerciseNameInputs from "../components/ExerciseNameInputs";
+import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
-import { useNavigate } from "react-router-dom";
+import { IExercise } from "../utils/models";
 
-import ProgramBaseInfoInputs from '../components/ProgramBaseInfoInputs';
-import ProgramRepsInfoInputs from '../components/ProgramRepsInfoInputs';
+export default function ProgramFormPage() {
+    const [exerciseList, setExerciseList] = useState<IExercise[]>([])
+    const [isExerciseNameMode, setExerciseNameMode] = useState(true)
 
-import { Exercises, ExerciseSet, Program } from '../utils/models';
-import { createProgram } from "../services";
+    const dayName = useRef<HTMLInputElement>(null)
 
-interface IProgramFormPageProps {
-    setPreEditInfo: (condition: boolean) => void
-}
+    function handleNextFormStep() {
+        setExerciseNameMode(false)
+    }
 
-export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProps) {
-    const [isBaseInfoFilled, setBaseInfoFilled] = useState(false)
-    const [exercises, setExercises] = useState<Exercises>({})
-
-    const [programName, setProgramName] = useState<string>("")
-
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        const preProgramInfo: Program = {
-            dayName: programName,
-            exercises: exercises,
+    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event?.preventDefault()
+        console.log({
+            dayName: dayName.current?.value,
+            exerciseList,
             date: new Date()
-        }
-        localStorage.setItem("exercises", JSON.stringify(preProgramInfo))
-    }, [exercises, programName, setExercises, setProgramName])
-
-    const handleChange = (exerciseName: string, setIndex: number, field: keyof ExerciseSet, value: string) => {
-        setExercises((prevExercises) => {
-            const newExercises = { ...prevExercises };
-            if (!newExercises[exerciseName]) {
-                newExercises[exerciseName] = [];
-            }
-            if (!newExercises[exerciseName][setIndex]) {
-                newExercises[exerciseName][setIndex] = { reps: 0, weight: 0 };
-            }
-            newExercises[exerciseName][setIndex][field] = Number(value);
-            return newExercises;
         });
-    };
-
-    function handleSubmit(e: any) {
-        e.preventDefault()
-        createProgram({
-            dayName: e.target.elements[0].value,
-            exercises: exercises,
-            date: new Date()
-        }).then(() => {
-            navigate("/")
-            localStorage.removeItem("exercises")
-            setPreEditInfo(false)
-        })
     }
 
     return (
         <div className="container-absolute-center">
-            <form className="form" onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Day Name"
-                    style={{ padding: "8px 8px" }}
-                    list="program-types"
-                    value={programName}
-                    onChange={(e) => setProgramName(e.target.value)}
-                />
+            <form
+                className="form"
+                style={{ display: "flex", flexDirection: "column", textAlign: "center", width: "500px", margin: "auto", }}
+                onSubmit={handleSubmit}
+            >
+                <input type="text" placeholder="Day Name" list="program-types" ref={dayName} style={{ border: "2.5px solid #ffde21", fontSize: "20px" }} />
                 <datalist id="program-types">
                     <option value="Ноги + Біцепси">Ноги + Біцепси</option>
                     <option value="Груди (верх) + Плечі">Груди (верх) + Плечі</option>
@@ -75,32 +39,11 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
                     <option value="Спина + Тріцепси">Спина + Тріцепси</option>
                 </datalist>
                 {
-                    isBaseInfoFilled
-                        ?
-                        (
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <ProgramRepsInfoInputs exercises={exercises} handleChange={handleChange} />
-                            </div>
-                        )
-                        :
-                        (
-                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                {
-                                    Object.keys(exercises).map((exercise, index) => {
-                                        return (
-                                            <div key={index}>
-                                                <h4 style={{ margin: 0 }}>{exercise}</h4>
-                                                <hr style={{ border: "1.5px solid #1e1e1e" }} />
-                                            </div>
-                                        )
-                                    })
-                                }
-                                <ProgramBaseInfoInputs exercises={exercises} setExercises={setExercises} />
-                                <button type="button" onClick={() => { setBaseInfoFilled(!isBaseInfoFilled); setPreEditInfo(true) }} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>Next</button>
-                            </div>
-                        )
+                    isExerciseNameMode
+                        ? <ExerciseNameInputs exerciseList={exerciseList} setExerciseList={setExerciseList} handleNextFormStep={handleNextFormStep} />
+                        : <ExerciseSetInputs exerciseList={exerciseList} setExerciseList={setExerciseList} />
                 }
             </form>
-        </div >
+        </div>
     );
 }
