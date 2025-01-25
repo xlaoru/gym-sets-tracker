@@ -6,7 +6,6 @@ import { getPrograms } from "../services";
 import { Program } from "../utils/models";
 
 export default function ProgramListPage() {
-
     const [programs, setPrograms] = useState<Program[] | []>([]);
 
     useEffect(() => {
