@@ -27,15 +27,21 @@ export interface INewProgramObject {
     date: Date;
 }
 
+export interface IProgramFormPageProps {
+    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export interface IExerciseSetInputsProps {
     exerciseList: IExercise[];
     setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
+    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export interface IExerciseNameInputsProps {
     exerciseList: IExercise[];
     setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
     handleNextFormStep: () => void;
+    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export interface IHeaderProps {

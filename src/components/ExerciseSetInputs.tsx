@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { IExerciseSetInputsProps } from "../utils/models";
+import { Program } from "../utils/models";
 
-export default function ExerciseSetInputs({ exerciseList, setExerciseList }: IExerciseSetInputsProps) {
+export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPreEditInfo }: IExerciseSetInputsProps) {
     function handleNameChange(event: React.ChangeEvent<HTMLInputElement>, index: number) {
         const updatedExerciseList = exerciseList.map((exercise, i) => {
             if (index === i) {
@@ -11,11 +12,12 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList }: IEx
             return exercise
         })
         setExerciseList(updatedExerciseList)
+        setPreEditInfo(true)
     }
 
     function handleWeightOrRepChange(
         event: React.ChangeEvent<HTMLInputElement>,
-        cellType: "weight" | "rep",
+        cellType: "weight" | "reps",
         setIndex: number,
         rowIndex: number
     ) {
@@ -46,7 +48,19 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList }: IEx
             return exercise
         })
         setExerciseList(updatedExerciseList)
+        setPreEditInfo(true)
     }
+
+    useEffect(() => {
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        const dayName = parsedProgram.dayName ? parsedProgram.dayName : ""
+        const program: Program = {
+            dayName,
+            exercises: exerciseList,
+            date: new Date()
+        }
+        localStorage.setItem("program", JSON.stringify(program))
+    }, [exerciseList])
 
     return (
         <>
@@ -75,7 +89,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList }: IEx
                                     style={{ width: "50%" }}
                                     type="number"
                                     value={set.reps}
-                                    onChange={(event) => handleWeightOrRepChange(event, "rep", setIndex, rowIndex)}
+                                    onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
                                 />
                             </div>
                         ))

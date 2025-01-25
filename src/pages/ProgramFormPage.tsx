@@ -1,26 +1,52 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ExerciseNameInputs from "../components/ExerciseNameInputs";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
-import { IExercise } from "../utils/models";
+import { IExercise, IProgramFormPageProps, Program } from "../utils/models";
+import { createProgram } from "../services";
+import { useNavigate } from "react-router-dom";
 
-export default function ProgramFormPage() {
+export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProps) {
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
+    }, [])
+
     const [exerciseList, setExerciseList] = useState<IExercise[]>([])
     const [isExerciseNameMode, setExerciseNameMode] = useState(true)
-
-    const dayName = useRef<HTMLInputElement>(null)
+    const [dayName, setDayName] = useState("")
 
     function handleNextFormStep() {
         setExerciseNameMode(false)
     }
 
+    function handleDayNameChange(event: React.ChangeEvent<HTMLInputElement>) {
+        setDayName(event.target.value)
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        const program: Program = {
+            ...parsedProgram,
+            dayName: event.target.value
+        }
+        localStorage.setItem("program", JSON.stringify(program))
+        setPreEditInfo(true)
+    }
+
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event?.preventDefault()
-        console.log({
-            dayName: dayName.current?.value,
-            exerciseList,
+        const program: Program = {
+            dayName,
+            exercises: exerciseList,
             date: new Date()
-        });
+        }
+        createProgram(program).then(() => {
+            localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
+            setPreEditInfo(false)
+            setExerciseList([])
+            setExerciseNameMode(true)
+            setDayName("")
+            navigate("/")
+        })
     }
 
     return (
@@ -30,7 +56,14 @@ export default function ProgramFormPage() {
                 style={{ display: "flex", flexDirection: "column", textAlign: "center", width: "500px", margin: "auto", }}
                 onSubmit={handleSubmit}
             >
-                <input type="text" placeholder="Day Name" list="program-types" ref={dayName} style={{ border: "2.5px solid #ffde21", fontSize: "20px" }} />
+                <input
+                    type="text"
+                    placeholder="Day Name"
+                    list="program-types"
+                    style={{ border: "2.5px solid #ffde21", fontSize: "20px" }}
+                    value={dayName}
+                    onChange={handleDayNameChange}
+                />
                 <datalist id="program-types">
                     <option value="Ноги + Біцепси">Ноги + Біцепси</option>
                     <option value="Груди (верх) + Плечі">Груди (верх) + Плечі</option>
@@ -40,8 +73,8 @@ export default function ProgramFormPage() {
                 </datalist>
                 {
                     isExerciseNameMode
-                        ? <ExerciseNameInputs exerciseList={exerciseList} setExerciseList={setExerciseList} handleNextFormStep={handleNextFormStep} />
-                        : <ExerciseSetInputs exerciseList={exerciseList} setExerciseList={setExerciseList} />
+                        ? <ExerciseNameInputs setPreEditInfo={setPreEditInfo} exerciseList={exerciseList} setExerciseList={setExerciseList} handleNextFormStep={handleNextFormStep} />
+                        : <ExerciseSetInputs setPreEditInfo={setPreEditInfo} exerciseList={exerciseList} setExerciseList={setExerciseList} />
                 }
             </form>
         </div>

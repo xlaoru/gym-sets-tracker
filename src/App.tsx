@@ -12,7 +12,7 @@ function App() {
   const [hasPreEditInfo, setPreEditInfo] = useState(false);
 
   useEffect(() => {
-    const storedProgram = localStorage.getItem('exercises');
+    const storedProgram = localStorage.getItem('program');
     if (storedProgram) {
       const parsedProgram = JSON.parse(storedProgram);
       if (parsedProgram.dayName && parsedProgram.dayName !== "") {
@@ -26,7 +26,7 @@ function App() {
       <Header hasPreEditInfo={hasPreEditInfo} />
       <Routes>
         <Route path="/" element={<ProgramListPage />} />
-        <Route path="/add" element={<ProgramFormPage />} />
+        <Route path="/add" element={<ProgramFormPage setPreEditInfo={setPreEditInfo} />} />
         <Route path="/pre-edit" element={<PreEditPage />} />
       </Routes>
     </Router>
