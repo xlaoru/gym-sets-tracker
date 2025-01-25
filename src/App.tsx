@@ -27,7 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ProgramListPage />} />
         <Route path="/add" element={<ProgramFormPage setPreEditInfo={setPreEditInfo} />} />
-        <Route path="/pre-edit" element={<PreEditPage />} />
+        <Route path="/pre-edit" element={<PreEditPage setPreEditInfo={setPreEditInfo} />} />
       </Routes>
     </Router>
   )

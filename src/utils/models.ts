@@ -47,3 +47,7 @@ export interface IHeaderProps {
     hasPreEditInfo: boolean
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export interface IPreEditPageProps{
+    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
+}

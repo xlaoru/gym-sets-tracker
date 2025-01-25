@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IExercise, Program, ExerciseSet } from "../utils/models";
+import { IExercise, Program, ExerciseSet, IPreEditPageProps } from "../utils/models";
 import { createProgram } from "../services";
 
-export default function PreEditPage() {
+import { ChevronDown, ChevronUp, Trash } from "lucide-react";
+
+export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
     const navigate = useNavigate();
 
     const [program, setProgram] = useState<Program>(() => {
@@ -49,6 +51,70 @@ export default function PreEditPage() {
         });
     }
 
+    function removeExercise(index: number) {
+        setProgram((prevProgram) => {
+            const newExercises = [...prevProgram.exercises];
+            newExercises.splice(index, 1);
+            return {
+                ...prevProgram,
+                exercises: newExercises,
+            };
+        });
+    }
+
+    function moveExerciseUp(index: number) {
+        if (index === 0) {
+            return;
+        }
+        const updatedExerciseList = [...program.exercises];
+        const tempExercise = updatedExerciseList[index];
+        updatedExerciseList[index] = updatedExerciseList[index - 1];
+        updatedExerciseList[index - 1] = tempExercise;
+        setProgram((prevProgram) => ({
+            ...prevProgram,
+            exercises: updatedExerciseList,
+        }));
+    }
+
+    function moveExerciseDown(index: number) {
+        if (index === program.exercises.length - 1) {
+            return;
+        }
+        const updatedExerciseList = [...program.exercises];
+        const tempExercise = updatedExerciseList[index];
+        updatedExerciseList[index] = updatedExerciseList[index + 1];
+        updatedExerciseList[index + 1] = tempExercise;
+        setProgram((prevProgram) => ({
+            ...prevProgram,
+            exercises: updatedExerciseList,
+        }));
+    }
+
+    function renderChevrons(index: number) {
+        const updatedExerciseList = [...program.exercises];
+
+        if (index === (updatedExerciseList.length - 1)) {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveExerciseUp(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronUp size="18px" /></button>
+                </div>
+            )
+        } else if (index === 0) {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveExerciseDown(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronDown size="18px" /></button>
+                </div>
+            )
+        } else {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveExerciseUp(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronUp size="18px" /></button>
+                    <button onClick={() => moveExerciseDown(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronDown size="18px" /></button>
+                </div>
+            )
+        }
+    }
+
     function renderProgram() {
         if (program.dayName) {
             return (
@@ -58,11 +124,22 @@ export default function PreEditPage() {
                             key={rowIndex}
                             style={{ display: "flex", flexDirection: "column", margin: "10px 0" }}
                         >
-                            <input
-                                style={{ border: "1.6px solid black", marginBottom: "5px" }}
-                                value={exercise.name}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleNameChange(event, rowIndex)}
-                            />
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                {renderChevrons(rowIndex)}
+                                <input
+                                    style={{ border: "1.6px solid black", marginBottom: "5px" }}
+                                    value={exercise.name}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleNameChange(event, rowIndex)}
+                                />
+                                <button
+                                    type="button"
+                                    className="icon-button"
+                                    style={{ backgroundColor: "transparent", border: "none" }}
+                                    onClick={() => removeExercise(rowIndex)}
+                                >
+                                    <Trash color="#da3633" />
+                                </button>
+                            </div>
                             {exercise.sets.map((set: ExerciseSet, setIndex: number) => (
                                 <div
                                     key={setIndex}
@@ -95,6 +172,7 @@ export default function PreEditPage() {
         createProgram(program).then(() => {
             localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }));
             setProgram({ dayName: "", exercises: [], date: new Date() });
+            setPreEditInfo(false);
             navigate("/");
         });
     }
