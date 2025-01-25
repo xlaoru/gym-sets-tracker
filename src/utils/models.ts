@@ -10,7 +10,6 @@ export interface IExercise {
     sets: ExerciseSet[]
 }
 
-
 export interface ExerciseSet {
     reps: number;
     weight: number;
@@ -46,4 +45,9 @@ export interface IExerciseNameInputsProps {
 
 export interface IHeaderProps {
     hasPreEditInfo: boolean
+    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface IPreEditPageProps{
+    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }

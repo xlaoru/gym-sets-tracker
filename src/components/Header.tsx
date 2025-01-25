@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { IHeaderProps } from "../utils/models";
 
-export default function Header({ hasPreEditInfo }: IHeaderProps) {
+export default function Header({ hasPreEditInfo, setPreEditInfo }: IHeaderProps) {
     const navigate = useNavigate()
     return (
         <header className="header">
