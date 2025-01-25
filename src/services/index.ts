@@ -13,10 +13,10 @@ export function createProgram(program: INewProgramObject) {
 }
 
 export function editProgram(program: INewProgramObject, id: string) {
-    return axios.put(`${PORT}/api/programs/${id}`, program);
+  return axios.put(`${PORT}/api/programs/${id}`, program);
 }
 
 export function deleteProgram(id: string) {
-  console.log(`${PORT}/api/programs/${id}`);
+  // console.log(`${PORT}/api/programs/${id}`);
   return axios.delete(`${PORT}/api/programs/${id}`);
 }

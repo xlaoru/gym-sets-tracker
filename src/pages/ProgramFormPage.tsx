@@ -11,7 +11,8 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
 
     useEffect(() => {
         localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
-    }, [])
+        setPreEditInfo(false)
+    }, [setPreEditInfo])
 
     const [exerciseList, setExerciseList] = useState<IExercise[]>([])
     const [isExerciseNameMode, setExerciseNameMode] = useState(true)
@@ -53,7 +54,7 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
         <div className="container-absolute-center">
             <form
                 className="form"
-                style={{ display: "flex", flexDirection: "column", textAlign: "center", width: "500px", margin: "auto", }}
+                style={{ display: "flex", flexDirection: "column", textAlign: "center", margin: "auto", }}
                 onSubmit={handleSubmit}
             >
                 <input

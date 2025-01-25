@@ -23,7 +23,7 @@ function App() {
 
   return (
     <Router>
-      <Header hasPreEditInfo={hasPreEditInfo} />
+      <Header hasPreEditInfo={hasPreEditInfo} setPreEditInfo={setPreEditInfo} />
       <Routes>
         <Route path="/" element={<ProgramListPage />} />
         <Route path="/add" element={<ProgramFormPage setPreEditInfo={setPreEditInfo} />} />

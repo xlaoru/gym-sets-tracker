@@ -3,6 +3,8 @@ import React, { useEffect } from "react";
 import { IExerciseSetInputsProps } from "../utils/models";
 import { Program } from "../utils/models";
 
+import { ChevronDown, ChevronUp, Trash } from "lucide-react";
+
 export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPreEditInfo }: IExerciseSetInputsProps) {
     function handleNameChange(event: React.ChangeEvent<HTMLInputElement>, index: number) {
         const updatedExerciseList = exerciseList.map((exercise, i) => {
@@ -12,7 +14,11 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
             return exercise
         })
         setExerciseList(updatedExerciseList)
-        setPreEditInfo(true)
+
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        if (parsedProgram.dayName !== "") {
+            setPreEditInfo(true)
+        }
     }
 
     function handleWeightOrRepChange(
@@ -48,7 +54,80 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
             return exercise
         })
         setExerciseList(updatedExerciseList)
-        setPreEditInfo(true)
+
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        if (parsedProgram.dayName !== "") {
+            setPreEditInfo(true)
+        }
+    }
+
+    function removeExercise(index: number) {
+        const updatedExerciseList = exerciseList.filter((exercise, i) => index !== i)
+        setExerciseList(updatedExerciseList)
+
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        if (parsedProgram.dayName !== "") {
+            setPreEditInfo(true)
+        }
+    }
+
+    function moveExerciseUp(index: number) {
+        if (index === 0) {
+            return
+        }
+        const updatedExerciseList = [...exerciseList]
+        const tempExercise = updatedExerciseList[index]
+        updatedExerciseList[index] = updatedExerciseList[index - 1]
+        updatedExerciseList[index - 1] = tempExercise
+        setExerciseList(updatedExerciseList)
+
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        if (parsedProgram.dayName !== "") {
+            setPreEditInfo(true)
+        }
+    }
+
+    function moveExerciseDown(index: number) {
+        if (index === (exerciseList.length - 1)) {
+            return
+        }
+        const updatedExerciseList = [...exerciseList]
+        const tempExercise = updatedExerciseList[index]
+        updatedExerciseList[index] = updatedExerciseList[index + 1]
+        updatedExerciseList[index + 1] = tempExercise
+        setExerciseList(updatedExerciseList)
+
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        if (parsedProgram.dayName !== "") {
+            setPreEditInfo(true)
+        }
+    }
+
+    function renderChevrons(index: number) {
+        if (exerciseList.length === 1) {
+            return null
+        }
+
+        if (index === (exerciseList.length - 1)) {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveExerciseUp(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronUp size="18px" /></button>
+                </div>
+            )
+        } else if (index === 0) {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveExerciseDown(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronDown size="18px" /></button>
+                </div>
+            )
+        } else {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveExerciseUp(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronUp size="18px" /></button>
+                    <button onClick={() => moveExerciseDown(index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronDown size="18px" /></button>
+                </div>
+            )
+        }
     }
 
     useEffect(() => {
@@ -69,11 +148,17 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                     key={rowIndex}
                     style={{ display: "flex", flexDirection: "column", margin: "10px 0" }}
                 >
-                    <input
-                        style={{ border: "1.6px solid black", marginBottom: "5px" }}
-                        value={exercise.name}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleNameChange(event, rowIndex)}
-                    />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        {renderChevrons(rowIndex)}
+                        <input
+                            style={{ border: "1.6px solid black" }}
+                            value={exercise.name}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleNameChange(event, rowIndex)}
+                        />
+                        <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} onClick={() => removeExercise(rowIndex)}>
+                            <Trash color="#da3633" />
+                        </button>
+                    </div>
                     {
                         exercise.sets.map((set, setIndex) => (
                             <div
