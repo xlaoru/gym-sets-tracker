@@ -17,19 +17,15 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             newExerciseName.current.value = ""
         }
 
-        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
-        if (parsedProgram.dayName !== "") {
-            setPreEditInfo(true)
-        }
+        setPreEditInfo(true)
     }
 
     function removeExercise(index: number) {
         const updatedExerciseList = exerciseList.filter((exercise, i) => index !== i)
         setExerciseList(updatedExerciseList)
 
-        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
-        if (parsedProgram.dayName !== "") {
-            setPreEditInfo(true)
+        if (exerciseList.length === 1) {
+            setPreEditInfo(false)
         }
     }
 
@@ -42,10 +38,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         })
         setExerciseList(updatedExerciseList)
 
-        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
-        if (parsedProgram.dayName !== "") {
-            setPreEditInfo(true)
-        }
+        setPreEditInfo(true)
     }
 
     useEffect(() => {
@@ -68,11 +61,6 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         updatedExerciseList[index] = updatedExerciseList[index - 1]
         updatedExerciseList[index - 1] = tempExercise
         setExerciseList(updatedExerciseList)
-
-        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
-        if (parsedProgram.dayName !== "") {
-            setPreEditInfo(true)
-        }
     }
 
     function moveExerciseDown(index: number) {
@@ -84,11 +72,6 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         updatedExerciseList[index] = updatedExerciseList[index + 1]
         updatedExerciseList[index + 1] = tempExercise
         setExerciseList(updatedExerciseList)
-
-        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
-        if (parsedProgram.dayName !== "") {
-            setPreEditInfo(true)
-        }
     }
 
     function renderChevrons(index: number) {
