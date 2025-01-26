@@ -13,7 +13,7 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                     {program.dayName} | {new Date(program.date).toLocaleDateString('en-GB').replace(/\//g, '.')}
                     <div style={{ display: "flex", gap: "5px" }}>
                         <button className="icon-button" onClick={() => navigate("/edit", { state: { program } })}>
-                            <FilePenLine color="#808080" />
+                            <FilePenLine color="#ffcc00" />
                         </button>
                         <button className="icon-button" onClick={() => deleteProgram(program._id || "").then(() => window.location.reload())}>
                             <Trash color="#d03533" />

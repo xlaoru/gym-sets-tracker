@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { IExercise, Program, ExerciseSet, IPreEditPageProps } from "../utils/models";
 import { createProgram } from "../services";
 
-import { ChevronDown, ChevronUp, Trash } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash } from "lucide-react";
 
 export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
     const navigate = useNavigate();
+    const newExerciseRef = useRef<HTMLInputElement>(null)
 
     const [program, setProgram] = useState<Program>(() => {
         const storedProgram = localStorage.getItem("program");
@@ -161,9 +162,31 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
                             ))}
                         </div>
                     ))}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <input type="text" ref={newExerciseRef} style={{ border: "1.6px solid #1e1e1e" }} placeholder="New Exercise Name..." />
+                        <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "1px solid #1e1e1e", width: "100%", margin: "10px 0", display: "flex", justifyContent: "center" }} onClick={handleNewExercise}>
+                            <Plus size="24px" color="#1e1e1e" />
+                        </button>
+                    </div>
                     <button type="submit" style={{ width: "100%" }}>Submit</button>
                 </div>
             );
+        }
+    }
+
+    function handleNewExercise() {
+        if (newExerciseRef.current) {
+            const newExerciseName = newExerciseRef.current.value
+            if (newExerciseName.trim() === "") {
+                return
+            }
+
+            const updatedExerciseList: IExercise[] = [...program.exercises, { name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }] }]
+            setProgram({
+                ...program,
+                exercises: updatedExerciseList
+            })
+            newExerciseRef.current.value = ""
         }
     }
 

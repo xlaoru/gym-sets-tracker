@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IExercise } from "../utils/models";
-import { ChevronDown, ChevronUp, Trash } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash, Plus } from "lucide-react";
 import { editProgram } from "../services";
 
 export default function ProgramEditModePage() {
     const navigate = useNavigate();
+    const newExerciseRef = useRef<HTMLInputElement>(null)
 
     const location = useLocation();
     const program = location.state.program;
@@ -112,6 +113,18 @@ export default function ProgramEditModePage() {
         }
     }
 
+    function handleNewExercise() {
+        if (newExerciseRef.current) {
+            const newExerciseName = newExerciseRef.current.value
+            if (newExerciseName.trim() === "") {
+                return
+            }
+            const updatedExerciseList = [...exerciseList, { name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }] }]
+            setExerciseList(updatedExerciseList)
+            newExerciseRef.current.value = ""
+        }
+    }
+
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
@@ -172,6 +185,12 @@ export default function ProgramEditModePage() {
                         }
                     </div>
                 ))}
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <input type="text" ref={newExerciseRef} style={{ border: "1.6px solid #1e1e1e" }} placeholder="New Exercise Name..." />
+                    <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "1px solid #1e1e1e", width: "100%", margin: "10px 0", display: "flex", justifyContent: "center" }} onClick={handleNewExercise}>
+                        <Plus size="24px" color="#1e1e1e" />
+                    </button>
+                </div>
                 <button type="submit" style={{ width: "100%" }}>Submit</button>
             </form>
         </div>
