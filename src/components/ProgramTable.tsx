@@ -1,17 +1,24 @@
-import { deleteProgram, editProgram } from "../services";
+import { useNavigate } from "react-router-dom";
+import { deleteProgram } from "../services";
 import { IProgramTableProps } from "../utils/models";
 
-import { Trash } from 'lucide-react';
+import { Trash, FilePenLine } from 'lucide-react';
 
 export default function ProgramTable({ program }: IProgramTableProps) {
+    const navigate = useNavigate();
     return (
         <table>
             <caption>
                 <div className="container-space-between">
                     {program.dayName} | {new Date(program.date).toLocaleDateString('en-GB').replace(/\//g, '.')}
-                    <button className="icon-button" onClick={() => deleteProgram(program._id || "").then(() => window.location.reload())}>
-                        <Trash color="#d03533" />
-                    </button>
+                    <div style={{ display: "flex", gap: "5px" }}>
+                        <button className="icon-button" onClick={() => navigate("/edit", { state: { program } })}>
+                            <FilePenLine color="#808080" />
+                        </button>
+                        <button className="icon-button" onClick={() => deleteProgram(program._id || "").then(() => window.location.reload())}>
+                            <Trash color="#d03533" />
+                        </button>
+                    </div>
                 </div>
             </caption>
             {program.exercises.map((exercise, index) => (

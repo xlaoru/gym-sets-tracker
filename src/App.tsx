@@ -7,6 +7,7 @@ import ProgramListPage from './pages/ProgramListPage';
 import './styles/App.css';
 import Header from "./components/Header";
 import PreEditPage from "./pages/PreEditPage";
+import ProgramEditModePage from "./pages/ProgramEditModePage";
 
 function App() {
   const [hasPreEditInfo, setPreEditInfo] = useState(false);
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<ProgramListPage />} />
         <Route path="/add" element={<ProgramFormPage setPreEditInfo={setPreEditInfo} />} />
         <Route path="/pre-edit" element={<PreEditPage setPreEditInfo={setPreEditInfo} />} />
+        <Route path="/edit" element={<ProgramEditModePage />} />
       </Routes>
     </Router>
   )
