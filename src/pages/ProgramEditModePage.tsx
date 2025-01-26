@@ -134,9 +134,9 @@ export default function ProgramEditModePage() {
             date: new Date()
         }
 
-        editProgram(updatedProgram, program._id)
-
-        navigate("/")
+        editProgram(updatedProgram, program._id).then(() => {
+            navigate("/")
+        })
     }
 
     return (
