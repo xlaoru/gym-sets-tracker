@@ -94,6 +94,10 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
     function renderChevrons(index: number) {
         const updatedExerciseList = [...program.exercises];
 
+        if (updatedExerciseList.length === 1) {
+            return null
+        }
+
         if (index === (updatedExerciseList.length - 1)) {
             return (
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
