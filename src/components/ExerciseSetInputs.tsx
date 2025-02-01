@@ -167,18 +167,24 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                             <div
                                 key={setIndex}
                                 style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
-                                <input
-                                    style={{ width: "50%" }}
-                                    type="number"
-                                    value={set.weight}
-                                    onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
-                                />
-                                <input
-                                    style={{ width: "50%" }}
-                                    type="number"
-                                    value={set.reps}
-                                    onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
-                                />
+                                <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                    weight (kg)
+                                    <input
+                                        type="text"
+                                        defaultValue={set.weight}
+                                        onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
+                                        placeholder="weight (kg)"
+                                    />
+                                </label>
+                                <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                    reps
+                                    <input
+                                        type="text"
+                                        defaultValue={set.reps}
+                                        onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
+                                        placeholder="reps"
+                                    />
+                                </label>
                             </div>
                         ))
                     }

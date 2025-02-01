@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IExercise, Program } from "../utils/models";
 import { editProgram } from "../services";
@@ -9,6 +9,10 @@ export default function ProgramEditModePage() {
 
     const location = useLocation();
     const program = location.state.program;
+
+    useEffect(() => {
+        localStorage.setItem("program", JSON.stringify(program))
+    }, [program])
 
     const [dayName, setDayName] = useState(program.dayName);
     const [exerciseList, setExerciseList] = useState<IExercise[]>(program.exercises);
