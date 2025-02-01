@@ -1,3 +1,3 @@
 export default function Loader() {
-    return <div className="container-absolute-center" style={{ height: "85vh" }}><div className="loader"></div></div>;
+    return <div style={{ height: "85vh", display: "flex", justifyContent: "center", alignItems: "center" }}><div className="loader"></div></div>;
 }
