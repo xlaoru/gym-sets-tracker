@@ -54,7 +54,7 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
         <div className="container-absolute-center">
             <form
                 className="form"
-                style={{ display: "flex", flexDirection: "column", textAlign: "center", margin: "auto", }}
+                style={{ display: "flex", flexDirection: "column", textAlign: "center", }}
                 onSubmit={handleSubmit}
             >
                 <input
