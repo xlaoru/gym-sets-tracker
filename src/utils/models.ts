@@ -33,7 +33,7 @@ export interface IProgramFormPageProps {
 export interface IExerciseSetInputsProps {
     exerciseList: IExercise[];
     setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
-    setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
+    setPreEditInfo?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export interface IExerciseNameInputsProps {

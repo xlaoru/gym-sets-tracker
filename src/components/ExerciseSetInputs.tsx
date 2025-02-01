@@ -17,7 +17,9 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         })
         setExerciseList(updatedExerciseList)
 
-        setPreEditInfo(true)
+        if (setPreEditInfo) {
+            setPreEditInfo(true)
+        }
     }
 
     function handleWeightOrRepChange(
@@ -54,7 +56,9 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         })
         setExerciseList(updatedExerciseList)
 
-        setPreEditInfo(true)
+        if (setPreEditInfo) {
+            setPreEditInfo(true)
+        }
     }
 
     function removeExercise(index: number) {
@@ -62,7 +66,9 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         setExerciseList(updatedExerciseList)
 
         if (exerciseList.length === 1) {
-            setPreEditInfo(false)
+            if (setPreEditInfo) {
+                setPreEditInfo(true)
+            }
         }
     }
 
