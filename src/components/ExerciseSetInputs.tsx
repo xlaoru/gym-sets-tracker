@@ -266,7 +266,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                         weight (kg)
                                         <input
                                             type="text"
-                                            defaultValue={set.weight}
+                                            value={set.weight}
                                             onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
                                             placeholder="weight (kg)"
                                         />
@@ -275,7 +275,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                         reps
                                         <input
                                             type="text"
-                                            defaultValue={set.reps}
+                                            value={set.reps}
                                             onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
                                             placeholder="reps"
                                         />
