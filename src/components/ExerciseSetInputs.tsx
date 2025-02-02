@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { IExerciseSetInputsProps } from "../utils/models";
 import { Program } from "../utils/models";
 
-import { ChevronDown, ChevronUp, Plus, Trash } from "lucide-react";
+import { ChevronDown, ChevronUp, MinusCircle, Plus, PlusCircle, Trash } from "lucide-react";
 
 export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPreEditInfo }: IExerciseSetInputsProps) {
     const newExerciseRef = useRef<HTMLInputElement>(null)
@@ -65,6 +65,10 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         const updatedExerciseList = exerciseList.filter((exercise, i) => index !== i)
         setExerciseList(updatedExerciseList)
 
+        setSetCount((prevSetCount) => {
+            return prevSetCount.filter((_, i) => i !== index)
+        });
+
         if (exerciseList.length === 1) {
             if (setPreEditInfo) {
                 setPreEditInfo(true)
@@ -81,6 +85,21 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         updatedExerciseList[index] = updatedExerciseList[index - 1]
         updatedExerciseList[index - 1] = tempExercise
         setExerciseList(updatedExerciseList)
+        setSetCount((prevSetCount) => {
+            const newSetCount = [...prevSetCount];
+            const tempSetCount = newSetCount[index];
+
+            const updatedSetCount = newSetCount.map((item, i) => {
+                if (i === index) {
+                    return newSetCount[index - 1]
+                }
+                if (i === index - 1) {
+                    return tempSetCount
+                }
+                return item
+            });
+            return updatedSetCount;
+        });
     }
 
     function moveExerciseDown(index: number) {
@@ -92,6 +111,21 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         updatedExerciseList[index] = updatedExerciseList[index + 1]
         updatedExerciseList[index + 1] = tempExercise
         setExerciseList(updatedExerciseList)
+        setSetCount((prevSetCount) => {
+            const newSetCount = [...prevSetCount];
+            const tempSetCount = newSetCount[index];
+
+            const updatedSetCount = newSetCount.map((item, i) => {
+                if (i === index) {
+                    return newSetCount[index + 1]
+                }
+                if (i === index + 1) {
+                    return tempSetCount
+                }
+                return item
+            });
+            return updatedSetCount;
+        });
     }
 
     function renderChevrons(index: number) {
@@ -129,7 +163,67 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
             }
             const updatedExerciseList = [...exerciseList, { name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }] }]
             setExerciseList(updatedExerciseList)
+            setSetCount((prevSetCount) => {
+                return [...prevSetCount, { count: 1 }];
+            });
             newExerciseRef.current.value = ""
+        }
+    }
+
+    const [setCount, setSetCount] = useState(() => {
+        const exercisesSetCount = exerciseList.map(() => {
+            return { count: 1 }
+        })
+
+        return exercisesSetCount
+    })
+
+    function handleNewSetItem(event: React.ChangeEvent<HTMLInputElement>, index: number) {
+        setSetCount((prevSetCount) => {
+            return prevSetCount.map((item, i) => {
+                if (i === index) {
+                    return { count: Number(event.target.value) };
+                }
+                return item;
+            });
+        });
+    }
+
+    function handleSetCounter(rowIndex: number, type: "increase" | "decrease") {
+        const queryExerciseSet = exerciseList[rowIndex].sets;
+        const currentSetCount = setCount[rowIndex].count
+
+        if (type === "increase") {
+            const newSets = Array(currentSetCount).fill(null).map(() => ({ weight: 0, reps: 0 }));
+
+            setExerciseList((prevExerciseList) => {
+                const updatedSets = [...queryExerciseSet, ...newSets];
+
+                const updatedExerciseList = prevExerciseList.map((exercise, index) => {
+                    if (index === rowIndex) {
+                        return { ...exercise, sets: updatedSets };
+                    }
+                    return exercise;
+                });
+
+                return updatedExerciseList;
+            });
+        } else {
+            if (currentSetCount >= queryExerciseSet.length) {
+                return;
+            } else {
+                setExerciseList((prevExerciseList) => {
+                    const updatedSets = queryExerciseSet.slice(0, queryExerciseSet.length - currentSetCount)
+
+                    const updatedExerciseList = prevExerciseList.map((exercise, index) => {
+                        if (index === rowIndex) {
+                            return { ...exercise, sets: updatedSets };
+                        }
+                        return exercise;
+                    });
+                    return updatedExerciseList;
+                });
+            }
         }
     }
 
@@ -162,32 +256,39 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                             <Trash color="#da3633" />
                         </button>
                     </div>
-                    {
-                        exercise.sets.map((set, setIndex) => (
-                            <div
-                                key={setIndex}
-                                style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
-                                <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
-                                    weight (kg)
-                                    <input
-                                        type="text"
-                                        defaultValue={set.weight}
-                                        onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
-                                        placeholder="weight (kg)"
-                                    />
-                                </label>
-                                <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
-                                    reps
-                                    <input
-                                        type="text"
-                                        defaultValue={set.reps}
-                                        onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
-                                        placeholder="reps"
-                                    />
-                                </label>
-                            </div>
-                        ))
-                    }
+                    <div>
+                        {
+                            exercise.sets.map((set, setIndex) => (
+                                <div
+                                    key={setIndex}
+                                    style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
+                                    <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                        weight (kg)
+                                        <input
+                                            type="text"
+                                            defaultValue={set.weight}
+                                            onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
+                                            placeholder="weight (kg)"
+                                        />
+                                    </label>
+                                    <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                        reps
+                                        <input
+                                            type="text"
+                                            defaultValue={set.reps}
+                                            onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
+                                            placeholder="reps"
+                                        />
+                                    </label>
+                                </div>
+                            ))
+                        }
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", padding: "12px 0 0 0" }}>
+                            <PlusCircle className="icon" color="#1e1e1e" onClick={() => handleSetCounter(rowIndex, "increase")} />
+                            <input type="text" value={setCount[rowIndex].count} onChange={(event) => handleNewSetItem(event, rowIndex)} style={{ width: "15px", textAlign: "center", border: "1.6px solid #1e1e1e" }} />
+                            <MinusCircle className="icon" color="#1e1e1e" onClick={() => handleSetCounter(rowIndex, "decrease")} />
+                        </div>
+                    </div>
                 </div>
             ))}
             <div style={{ display: "flex", flexDirection: "column" }}>

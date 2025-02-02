@@ -154,6 +154,15 @@ tbody tr:hover {
   }
 }
 
+.icon {
+  cursor: pointer;
+  transition: all .5s;
+}
+
+.icon:hover {
+  opacity: .5;
+}
+
 @media screen and (max-width: 600px) {
   .container-absolute-center {
     display: block;
