@@ -4,6 +4,8 @@ import { IExercise, Program } from "../utils/models";
 import { editProgram } from "../services";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
+import Loader from "../components/Loader";
+
 export default function ProgramEditModePage() {
     const navigate = useNavigate();
 
@@ -16,6 +18,8 @@ export default function ProgramEditModePage() {
 
     const [dayName, setDayName] = useState(program.dayName);
     const [exerciseList, setExerciseList] = useState<IExercise[]>(program.exercises);
+
+    const [isLoading, setLoading] = useState(false)
 
     function handleDayNameChange(event: React.ChangeEvent<HTMLInputElement>) {
         setDayName(event.target.value)
@@ -33,6 +37,8 @@ export default function ProgramEditModePage() {
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        setLoading(true)
+
         const updatedProgram = {
             dayName: dayName,
             exercises: exerciseList,
@@ -43,20 +49,25 @@ export default function ProgramEditModePage() {
             localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
             setDayName("")
             setExerciseList([])
+            setLoading(false)
             navigate("/")
         })
     }
 
     return (
         <div className="container-absolute-center">
-            <form className="form" onSubmit={handleSubmit}>
-                <input
-                    style={{ border: "2.5px solid #ffde21", fontSize: "20px" }}
-                    value={dayName}
-                    onChange={handleDayNameChange}
-                />
-                <ExerciseSetInputs exerciseList={exerciseList} setExerciseList={setExerciseList} />
-            </form>
+            {
+                isLoading
+                    ? <Loader />
+                    : <form className="form" onSubmit={handleSubmit}>
+                        <input
+                            style={{ border: "2.5px solid #ffde21", fontSize: "20px" }}
+                            value={dayName}
+                            onChange={handleDayNameChange}
+                        />
+                        <ExerciseSetInputs exerciseList={exerciseList} setExerciseList={setExerciseList} />
+                    </form>
+            }
         </div>
     );
 }
