@@ -1,26 +1,28 @@
 import { useNavigate } from "react-router-dom";
-import { deleteProgram } from "../services";
 import { IProgramTableProps } from "../utils/models";
 
 import { Trash, FilePenLine } from 'lucide-react';
 import { useState } from "react";
 
 import Loader from "../components/Loader"
+import { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { deleteProgram } from "../store/ProgramSlice";
 
 export default function ProgramTable({ program }: IProgramTableProps) {
     const navigate = useNavigate();
+
+    const dispatch: AppDispatch = useDispatch()
 
     const [isLoading, setLoading] = useState(false)
 
     function handleDeleteProgram() {
         setLoading(true)
 
-        deleteProgram(program._id || "").then(
-            () => {
-                setLoading(false)
-                window.location.reload()
-            }
-        )
+        const _id = program._id || ""
+        dispatch(deleteProgram({ _id })).then(() => {
+            setLoading(false)
+        })
     }
 
     return (

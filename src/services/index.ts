@@ -1,22 +1,33 @@
-import axios from "axios";
-import { INewProgramObject } from "../utils/models";
+import axios from 'axios';
 
-const PORT = "http://localhost:3001";
-// const PORT = "https://gym-sets-tracker-server-1.onrender.com"
+export const API_URL = `http://localhost:3001`
 
-export function getPrograms() {
-  return axios.get(`${PORT}/api/programs`);
-}
+const api = axios.create({
+    withCredentials: true,
+    baseURL: API_URL
+})
 
-export function createProgram(program: INewProgramObject) {
-  return axios.post(`${PORT}/api/programs`, program);
-}
+// ! DEMO
+/* api.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    return config;
+})
 
-export function editProgram(program: INewProgramObject, id: string) {
-  return axios.put(`${PORT}/api/programs/${id}`, program);
-}
+api.interceptors.response.use((config) => {
+    return config;
+}, async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 403 && error.config && !error.config._isRetry) {
+        originalRequest._isRetry = true;
+        try {
+            const response = await axios.post(`${API_URL}/auth/refresh`, {}, {withCredentials: true})
+            localStorage.setItem('token', response.data.token);
+            return api.request(originalRequest);
+        } catch (e) {
+            console.log('Not authorized.')
+        }
+    }
+    throw error;
+}) */
 
-export function deleteProgram(id: string) {
-  // console.log(`${PORT}/api/programs/${id}`);
-  return axios.delete(`${PORT}/api/programs/${id}`);
-}
+export default api

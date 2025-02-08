@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IExercise, Program } from "../utils/models";
-import { editProgram } from "../services";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
 import Loader from "../components/Loader";
+import { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { editProgram } from "../store/ProgramSlice";
 
 export default function ProgramEditModePage() {
     const navigate = useNavigate();
+
+    const dispatch: AppDispatch = useDispatch()
 
     const location = useLocation();
     const program = location.state.program;
@@ -40,12 +44,13 @@ export default function ProgramEditModePage() {
         setLoading(true)
 
         const updatedProgram = {
+            _id: program._id,
             dayName: dayName,
             exercises: exerciseList,
             date: new Date()
         }
 
-        editProgram(updatedProgram, program._id).then(() => {
+        dispatch(editProgram(updatedProgram)).then(() => {
             localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
             setDayName("")
             setExerciseList([])

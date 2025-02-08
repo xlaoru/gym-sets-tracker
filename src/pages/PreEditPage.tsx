@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { IExercise, IPreEditPageProps, Program } from "../utils/models";
-import { createProgram } from "../services";
 
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 import { useNavigate } from "react-router-dom";
 
 import Loader from "../components/Loader";
+import { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { createProgram } from "../store/ProgramSlice";
 
 export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
     const navigate = useNavigate()
+
+    const dispatch: AppDispatch = useDispatch()
 
     const program = localStorage.getItem("program") ?? ""
 
@@ -42,7 +46,7 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
             date: new Date()
         }
 
-        createProgram(program).then(() => {
+        dispatch(createProgram(program)).then(() => {
             localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
             setPreEditInfo(false)
             setDayName("")
