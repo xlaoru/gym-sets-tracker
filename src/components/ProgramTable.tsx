@@ -50,13 +50,17 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                                 <th>Weight (kg)</th>
                                 <th>Reps</th>
                             </tr>
-                            {exercise.sets.map((exerciseSet, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{exerciseSet.weight}</td>
-                                    <td>{exerciseSet.reps}</td>
-                                </tr>
-                            ))}
+                            {
+                                "sets" in exercise
+                                    ? exercise.sets.map((exerciseSet, index) => (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{exerciseSet.weight}</td>
+                                            <td>{exerciseSet.reps}</td>
+                                        </tr>
+                                    ))
+                                    : null
+                            }
                         </tbody>
                     ))}
                 </table>

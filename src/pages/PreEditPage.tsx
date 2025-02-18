@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IExercise, IPreEditPageProps, Program } from "../utils/models";
+import { IPreEditPageProps, Program, ProgramState } from "../utils/models";
 
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
     const programExerciseList = JSON.parse(program)?.exercises
 
     const [dayName, setDayName] = useState<string>(programDayName)
-    const [exerciseList, setExerciseList] = useState<IExercise[]>(programExerciseList)
+    const [exerciseList, setExerciseList] = useState<ProgramState[]>(programExerciseList)
 
     const [isLoading, setLoading] = useState(false)
 

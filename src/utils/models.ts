@@ -1,13 +1,20 @@
 export interface Program {
     _id?: string;
     dayName: string;
-    exercises: IExercise[];
+    exercises: ProgramState[];
     date: Date;
 }
+
+export type ProgramState = IExercise | ISuperset
 
 export interface IExercise {
     name: string;
     sets: ExerciseSet[]
+}
+
+export interface ISuperset {
+    name: string;
+    exercises: IExercise[];
 }
 
 export interface ExerciseSet {
@@ -31,14 +38,14 @@ export interface IProgramFormPageProps {
 }
 
 export interface IExerciseSetInputsProps {
-    exerciseList: IExercise[];
-    setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
+    exerciseList: ProgramState[];
+    setExerciseList: React.Dispatch<React.SetStateAction<ProgramState[]>>;
     setPreEditInfo?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export interface IExerciseNameInputsProps {
-    exerciseList: IExercise[];
-    setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
+    exerciseList: ProgramState[];
+    setExerciseList: React.Dispatch<React.SetStateAction<ProgramState[]>>;
     handleNextFormStep: () => void;
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 };

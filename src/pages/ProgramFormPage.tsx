@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ExerciseNameInputs from "../components/ExerciseNameInputs";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
-import { IExercise, IProgramFormPageProps, Program } from "../utils/models";
+import { IProgramFormPageProps, Program, ProgramState } from "../utils/models";
 import { useNavigate } from "react-router-dom";
 
 import Loader from "../components/Loader";
@@ -20,7 +20,7 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
         setPreEditInfo(false)
     }, [setPreEditInfo])
 
-    const [exerciseList, setExerciseList] = useState<IExercise[]>([])
+    const [exerciseList, setExerciseList] = useState<ProgramState[]>([])
     const [isExerciseNameMode, setExerciseNameMode] = useState(true)
     const [dayName, setDayName] = useState("")
 

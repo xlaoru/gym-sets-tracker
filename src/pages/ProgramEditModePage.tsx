@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IExercise, Program } from "../utils/models";
+import { Program, ProgramState } from "../utils/models";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
 import Loader from "../components/Loader";
@@ -21,7 +21,7 @@ export default function ProgramEditModePage() {
     }, [program])
 
     const [dayName, setDayName] = useState(program.dayName);
-    const [exerciseList, setExerciseList] = useState<IExercise[]>(program.exercises);
+    const [exerciseList, setExerciseList] = useState<ProgramState[]>(program.exercises);
 
     const [isLoading, setLoading] = useState(false)
 

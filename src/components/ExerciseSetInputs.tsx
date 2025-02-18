@@ -29,30 +29,34 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         rowIndex: number
     ) {
         const updatedExerciseList = exerciseList.map((exercise, index) => {
-            if (rowIndex === index) {
-                if (cellType === "weight") {
-                    return {
-                        ...exercise,
-                        sets:
-                            exercise.sets.map((set, jndex) =>
-                                setIndex === jndex ? {
-                                    ...set, weight: Number(event.target.value)
-                                } : set
-                            )
-                    }
-                } else {
-                    return {
-                        ...exercise,
-                        sets:
-                            exercise.sets.map((set, jndex) =>
-                                setIndex === jndex ? {
-                                    ...set, reps: Number(event.target.value)
-                                } : set
-                            )
+            if ("sets" in exercise) {
+                if (rowIndex === index) {
+                    if (cellType === "weight") {
+                        return {
+                            ...exercise,
+                            sets:
+                                exercise.sets.map((set, jndex) =>
+                                    setIndex === jndex ? {
+                                        ...set, weight: Number(event.target.value)
+                                    } : set
+                                )
+                        }
+                    } else {
+                        return {
+                            ...exercise,
+                            sets:
+                                exercise.sets.map((set, jndex) =>
+                                    setIndex === jndex ? {
+                                        ...set, reps: Number(event.target.value)
+                                    } : set
+                                )
+                        }
                     }
                 }
+                return exercise
+            } else {
+                return exercise
             }
-            return exercise
         })
         setExerciseList(updatedExerciseList)
 
@@ -190,7 +194,13 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
     }
 
     function handleSetCounter(rowIndex: number, type: "increase" | "decrease") {
-        const queryExerciseSet = exerciseList[rowIndex].sets;
+        const exercise = exerciseList[rowIndex];
+
+        if ("exercises" in exercise) {
+            return null;
+        }
+
+        const queryExerciseSet = exercise.sets;
         const currentSetCount = setCount[rowIndex].count
 
         if (type === "increase") {
@@ -258,30 +268,32 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                     </div>
                     <div>
                         {
-                            exercise.sets.map((set, setIndex) => (
-                                <div
-                                    key={setIndex}
-                                    style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
-                                    <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
-                                        weight (kg)
-                                        <input
-                                            type="text"
-                                            value={set.weight}
-                                            onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
-                                            placeholder="weight (kg)"
-                                        />
-                                    </label>
-                                    <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
-                                        reps
-                                        <input
-                                            type="text"
-                                            value={set.reps}
-                                            onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
-                                            placeholder="reps"
-                                        />
-                                    </label>
-                                </div>
-                            ))
+                            "sets" in exercise
+                                ? exercise.sets.map((set, setIndex) => (
+                                    <div
+                                        key={setIndex}
+                                        style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
+                                        <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                            weight (kg)
+                                            <input
+                                                type="text"
+                                                value={set.weight}
+                                                onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)}
+                                                placeholder="weight (kg)"
+                                            />
+                                        </label>
+                                        <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                            reps
+                                            <input
+                                                type="text"
+                                                value={set.reps}
+                                                onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)}
+                                                placeholder="reps"
+                                            />
+                                        </label>
+                                    </div>
+                                ))
+                                : null
                         }
                         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", padding: "12px 0 0 0" }}>
                             <PlusCircle className="icon" color="#1e1e1e" onClick={() => handleSetCounter(rowIndex, "increase")} />
