@@ -194,7 +194,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     }
 
     function editSuperSet() {
-        // setSuperSetEditMode(false);
+        setSuperSetEditMode(false);
 
         const selectedSuperSet = exerciseList.filter((exercise): exercise is ISuperset => "exercises" in exercise)[0]
         const selectedExercises = exerciseList.filter((exercise): exercise is IExercise => "sets" in exercise && exercise.isSelected)
@@ -222,7 +222,9 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                 return exercise;
             });
 
-        console.log("updatedMainExerciseList", updatedMainExerciseList);
+        setExerciseList(updatedMainExerciseList);
+
+        // console.log("updatedMainExerciseList", updatedMainExerciseList);
 
     }
 
