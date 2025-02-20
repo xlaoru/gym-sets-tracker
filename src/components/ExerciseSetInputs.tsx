@@ -165,7 +165,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
             if (newExerciseName.trim() === "") {
                 return
             }
-            const updatedExerciseList = [...exerciseList, { name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }] }]
+            const updatedExerciseList = [...exerciseList, { name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }]
             setExerciseList(updatedExerciseList)
             setSetCount((prevSetCount) => {
                 return [...prevSetCount, { count: 1 }];

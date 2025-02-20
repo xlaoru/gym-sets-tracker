@@ -9,7 +9,8 @@ export type ProgramState = IExercise | ISuperset
 
 export interface IExercise {
     name: string;
-    sets: ExerciseSet[]
+    sets: ExerciseSet[];
+    isSelected: boolean;
 }
 
 export interface ISuperset {
