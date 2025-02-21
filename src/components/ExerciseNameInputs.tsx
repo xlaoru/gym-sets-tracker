@@ -197,22 +197,24 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setSuperSetEditMode(false);
 
         const selectedSuperSet = exerciseList.filter((exercise): exercise is ISuperset => "exercises" in exercise)[0]
-        const selectedExercises = exerciseList.filter((exercise): exercise is IExercise => "sets" in exercise && exercise.isSelected)
 
-        console.log("selectedExercises", selectedExercises);
+        const selectedExercises = exerciseList.filter((exercise): exercise is IExercise => "sets" in exercise && exercise.isSelected)
+        const deselectedExercises = selectedSuperSet.exercises.filter((exercise) => !exercise.isSelected);
 
         const updatedSelectedSuperSet = {
             ...selectedSuperSet,
-            exercises: [...selectedSuperSet.exercises, ...selectedExercises]
+            exercises: [...selectedSuperSet.exercises.filter((exercise) => exercise.isSelected), ...selectedExercises]
         }
 
-        console.log("updatedSelectedSuperSet", updatedSelectedSuperSet);
+        console.log("deselectedExercises", deselectedExercises);
+
 
         const updatedMainExerciseList = mainExerciseList
             .filter((exercise) => {
                 if ("sets" in exercise) {
                     return !exercise.isSelected;
                 }
+
                 return true;
             })
             .map((exercise) => {
@@ -222,10 +224,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                 return exercise;
             });
 
-        setExerciseList(updatedMainExerciseList);
-
-        // console.log("updatedMainExerciseList", updatedMainExerciseList);
-
+        setExerciseList([...updatedMainExerciseList, ...deselectedExercises]);
     }
 
     function cancelSuperSetEditMode() {
