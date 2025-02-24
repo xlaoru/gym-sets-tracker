@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { IExerciseNameInputsProps, IExercise, ISuperset, ProgramState } from "../utils/models";
 
 import { ChevronDown, ChevronUp, Pencil, X } from "lucide-react";
@@ -12,15 +14,15 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
 
     const newExerciseName = useRef<HTMLInputElement>(null)
     const newSuperSetName = useRef<HTMLInputElement>(null)
-    const superSetEditedName = useRef<HTMLInputElement>(null)
 
     function addExercise(event: React.MouseEvent<HTMLButtonElement>) {
         event?.preventDefault()
         if (newExerciseName.current) {
-            const newExercise: Pick<IExercise, "name"> = {
+            const newExercise: Pick<IExercise, "_id" | "name"> = {
+                _id: uuidv4(),
                 name: newExerciseName.current.value
             }
-            setExerciseList([...exerciseList, { name: newExercise.name, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }])
+            setExerciseList([...exerciseList, { _id: newExercise._id, name: newExercise.name, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }])
             newExerciseName.current.value = ""
         }
 
@@ -133,6 +135,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
 
         setExerciseList((prevValue) => {
             const newSuperSet: ISuperset = {
+                _id: uuidv4(),
                 name: newSuperSetName.current?.value || "New Super Set",
                 exercises: updatedSelectedExercises
             };
@@ -233,7 +236,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                 return true;
             })
             .map((exercise) => {
-                if ("exercises" in exercise && exercise.name === updatedSelectedSuperSet.name) {
+                if ("exercises" in exercise && exercise._id === updatedSelectedSuperSet._id) {
                     return updatedSelectedSuperSet;
                 }
                 return exercise;
@@ -310,7 +313,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px", backgroundColor: "#f7f7f7", borderRadius: "4px", padding: "8px" }}>
                                 {!isSuperSetMode && renderChevrons(index)}
                                 <div>
-                                    <input style={{ textAlign: "center" }} disabled={true} value={exercise.name} />
+                                    <input style={{ textAlign: "center" }} disabled={!isSuperSetEditMode} value={exercise.name} onChange={(event) => handleChange(event, index)} />
                                     <div>
                                         {exercise.exercises.map((subExercise, subIndex) => {
                                             return (

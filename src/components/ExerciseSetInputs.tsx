@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { IExerciseSetInputsProps } from "../utils/models";
 import { Program } from "../utils/models";
 
@@ -165,7 +167,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
             if (newExerciseName.trim() === "") {
                 return
             }
-            const updatedExerciseList = [...exerciseList, { name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }]
+            const updatedExerciseList = [...exerciseList, { _id: uuidv4(), name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }]
             setExerciseList(updatedExerciseList)
             setSetCount((prevSetCount) => {
                 return [...prevSetCount, { count: 1 }];

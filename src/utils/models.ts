@@ -8,12 +8,14 @@ export interface Program {
 export type ProgramState = IExercise | ISuperset
 
 export interface IExercise {
+    _id: string;
     name: string;
     sets: ExerciseSet[];
     isSelected: boolean;
 }
 
 export interface ISuperset {
+    _id: string;
     name: string;
     exercises: IExercise[];
 }
