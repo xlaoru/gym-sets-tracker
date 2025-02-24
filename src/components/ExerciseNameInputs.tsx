@@ -10,7 +10,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     const [isSuperSetMode, setSuperSetMode] = useState(false)
     const [isSuperSetEditMode, setSuperSetEditMode] = useState(false)
 
-    const [mainExerciseList, setMainExerciseList] = useState<ProgramState[]>([])
+    const [mainExerciseList, setMainExerciseList] = useState<ProgramState[]>(exerciseList)
 
     const newExerciseName = useRef<HTMLInputElement>(null)
     const newSuperSetName = useRef<HTMLInputElement>(null)
