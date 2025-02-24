@@ -11,6 +11,8 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     const [mainExerciseList, setMainExerciseList] = useState<ProgramState[]>([])
 
     const newExerciseName = useRef<HTMLInputElement>(null)
+    const newSuperSetName = useRef<HTMLInputElement>(null)
+    const superSetEditedName = useRef<HTMLInputElement>(null)
 
     function addExercise(event: React.MouseEvent<HTMLButtonElement>) {
         event?.preventDefault()
@@ -41,6 +43,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             }
             return exercise
         })
+
         setExerciseList(updatedExerciseList)
 
         setPreEditInfo(true)
@@ -130,7 +133,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
 
         setExerciseList((prevValue) => {
             const newSuperSet: ISuperset = {
-                name: `Super Set = ${exerciseList.filter(exercise => "exercises" in exercise).length + 1}`,
+                name: newSuperSetName.current?.value || "New Super Set",
                 exercises: updatedSelectedExercises
             };
 
@@ -144,26 +147,24 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setSuperSetMode(false);
     }
 
-    function handleChangeSuperSetEditing(event: React.ChangeEvent<HTMLInputElement>, isSubIndex: boolean, index: number) {
-        const updatedExerciseList = exerciseList.map((exercise, i) => {
-            if ("sets" in exercise) {
-                if (!isSubIndex && index === i) {
-                    exercise.isSelected = event.target.checked;
-                    return exercise;
+    function cancelSuperSetAddingMode() {
+        setSuperSetMode(false)
+        setExerciseList((prevValue) => {
+            return prevValue.map((exercise) => {
+                if ("sets" in exercise) {
+                    return { ...exercise, isSelected: false };
+                } else {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.map((subExercise) => ({
+                            ...subExercise,
+                            isSelected: false
+                        }))
+                    };
                 }
             }
-
-            if ("exercises" in exercise) {
-                if (isSubIndex) {
-                    exercise.exercises[index].isSelected = event.target.checked;
-                    return exercise;
-                }
-            }
-
-            return exercise;
-        });
-
-        setExerciseList(updatedExerciseList);
+            );
+        })
     }
 
     function startSuperSetEditMode(index: number) {
@@ -188,9 +189,26 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setExerciseList(currentExerciseList)
     }
 
-    function cancleSuperSetEditMode() {
-        setSuperSetEditMode(false)
-        setExerciseList(mainExerciseList)
+    function handleChangeSuperSetEditing(event: React.ChangeEvent<HTMLInputElement>, isSubIndex: boolean, index: number) {
+        const updatedExerciseList = exerciseList.map((exercise, i) => {
+            if ("sets" in exercise) {
+                if (!isSubIndex && index === i) {
+                    exercise.isSelected = event.target.checked;
+                    return exercise;
+                }
+            }
+
+            if ("exercises" in exercise) {
+                if (isSubIndex) {
+                    exercise.exercises[index].isSelected = event.target.checked;
+                    return exercise;
+                }
+            }
+
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
     }
 
     function editSuperSet() {
@@ -205,9 +223,6 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             ...selectedSuperSet,
             exercises: [...selectedSuperSet.exercises.filter((exercise) => exercise.isSelected), ...selectedExercises]
         }
-
-        console.log("deselectedExercises", deselectedExercises);
-
 
         const updatedMainExerciseList = mainExerciseList
             .filter((exercise) => {
@@ -225,33 +240,49 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             });
 
         setExerciseList([...updatedMainExerciseList, ...deselectedExercises]);
+        setExerciseList((prevValue) => {
+            return prevValue.map((exercise) => {
+                if ("sets" in exercise) {
+                    return { ...exercise, isSelected: false };
+                } else {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.map((subExercise) => ({
+                            ...subExercise,
+                            isSelected: false
+                        }))
+                    };
+                }
+            }
+            );
+        })
     }
 
     function cancelSuperSetEditMode() {
-        setSuperSetMode(false);
+        setSuperSetEditMode(false);
+        setExerciseList(mainExerciseList)
+        setExerciseList((prevValue) => {
+            return prevValue.map((exercise) => {
+                if ("sets" in exercise) {
+                    return { ...exercise, isSelected: false };
+                } else {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.map((subExercise) => ({
+                            ...subExercise,
+                            isSelected: false
+                        }))
+                    };
+                }
+            }
+            );
+        })
     }
-
-    /* setExerciseList(mainExerciseList);
-    
-            setExerciseList((prevValue) => {
-                return prevValue.map((exercise) => {
-                    if ("sets" in exercise) {
-                        return { ...exercise, isSelected: false };
-                    } else {
-                        return {
-                            ...exercise,
-                            exercises: exercise.exercises.map((subExercise) => ({
-                                ...subExercise,
-                                isSelected: false
-                            }))
-                        };
-                    }
-                });
-            }); */
 
     return (
         <>
             <div>
+                {isSuperSetMode && <input placeholder="Super Set Name..." ref={newSuperSetName} />}
                 {exerciseList.map((exercise, index) => (
                     "sets" in exercise
                         ? <div
@@ -274,19 +305,24 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                                 <X color="#da3633" />
                             </button>}
                         </div>
-                        : !isSuperSetMode && <div key={index}>
-                            <p><b>{exercise.name}</b></p>
-                            <div>
-                                {exercise.exercises.map((subExercise, subIndex) => {
-                                    return (
-                                        <div key={subIndex}>
-                                            {isSuperSetEditMode && <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSetEditing(event, true, subIndex)} />}
-                                            {isSuperSetMode && <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSet(event, index)} />}
-                                            <p>{subExercise.name}</p>
-                                        </div>
-                                    )
-                                })}
-                                <button className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} type="button" onClick={() => startSuperSetEditMode(index)}><Pencil color="#1e1e1e" /></button>
+                        : !isSuperSetMode &&
+                        <div key={index}>
+                            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px", backgroundColor: "#f7f7f7", borderRadius: "4px", padding: "8px" }}>
+                                {!isSuperSetMode && renderChevrons(index)}
+                                <div>
+                                    <input style={{ textAlign: "center" }} disabled={true} value={exercise.name} />
+                                    <div>
+                                        {exercise.exercises.map((subExercise, subIndex) => {
+                                            return (
+                                                <div key={subIndex} style={{ display: "flex", justifyContent: "center" }}>
+                                                    {isSuperSetEditMode && <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSetEditing(event, true, subIndex)} />}
+                                                    {isSuperSetMode && <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSet(event, index)} />}
+                                                    <p style={{ margin: "4px 0 0 0" }}>{subExercise.name}</p>
+                                                </div>
+                                            )
+                                        })}
+                                    </div></div>
+                                {!isSuperSetEditMode && <button className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} type="button" onClick={() => startSuperSetEditMode(index)}><Pencil color="#1e1e1e" /></button>}
                             </div>
                         </div>
                 ))}
@@ -302,14 +338,14 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             {
                 exerciseList.length >= 2 && isSuperSetMode
                     ? <button type="button" onClick={addSuperSet}>Submit New Super Set</button>
-                    : !isSuperSetEditMode && <button type="button" onClick={startSuperSetMode}>Add New Super Set</button>
+                    : !isSuperSetEditMode && <button type="button" style={{ color: "#1e1e1e", backgroundColor: "#f8f6f6", border: "1px solid #aaa" }} onClick={startSuperSetMode}>Add New Super Set</button>
             }
 
-            {isSuperSetMode && <button type="button" onClick={cancelSuperSetEditMode}>Cancel</button>}
+            {isSuperSetMode && <button type="button" style={{ backgroundColor: "#da3633", border: "1px solid #b62324" }} onClick={cancelSuperSetAddingMode}>Cancel</button>}
 
-            {isSuperSetEditMode && <button type="button" onClick={editSuperSet}>Edit</button>}
-            {isSuperSetEditMode && <button type="button" onClick={cancleSuperSetEditMode}>Cancel</button>}
-            <button type="button" onClick={handleNextFormStep}>Next</button>
+            {isSuperSetEditMode && <button type="button" style={{ color: "#1e1e1e", backgroundColor: "#f8f6f6", border: "1px solid #aaa" }} onClick={editSuperSet}>Edit</button>}
+            {isSuperSetEditMode && <button type="button" style={{ backgroundColor: "#da3633", border: "1px solid #b62324" }} onClick={cancelSuperSetEditMode}>Cancel</button>}
+            {!(isSuperSetMode || isSuperSetEditMode) && <button type="button" onClick={handleNextFormStep}>Next</button>}
         </>
     )
 }
