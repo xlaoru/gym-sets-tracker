@@ -285,7 +285,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     return (
         <>
             <div>
-                {isSuperSetMode && <input placeholder="Super Set Name..." ref={newSuperSetName} />}
+                {isSuperSetMode && <input placeholder="Super Set Name..." ref={newSuperSetName} defaultValue="New Super Set" />}
                 {exerciseList.map((exercise, index) => (
                     "sets" in exercise
                         ? <div
@@ -310,7 +310,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                         </div>
                         : !isSuperSetMode &&
                         <div key={index}>
-                            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px", backgroundColor: "#f7f7f7", borderRadius: "4px", padding: "8px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", gap: "5px", backgroundColor: "#f7f7f7", borderRadius: "4px", padding: "8px", margin: "5px 0" }}>
                                 {!isSuperSetMode && renderChevrons(index)}
                                 <div>
                                     <input style={{ textAlign: "center" }} disabled={!isSuperSetEditMode} value={exercise.name} onChange={(event) => handleChange(event, index)} />
@@ -325,7 +325,14 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                                             )
                                         })}
                                     </div></div>
-                                {!isSuperSetEditMode && <button className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} type="button" onClick={() => startSuperSetEditMode(index)}><Pencil color="#1e1e1e" /></button>}
+                                {!isSuperSetEditMode &&
+                                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-around" }}>
+                                        <button className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} type="button" onClick={() => startSuperSetEditMode(index)}><Pencil color="#1e1e1e" /></button>
+                                        <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} onClick={() => removeExercise(index)}>
+                                            <X color="#da3633" />
+                                        </button>
+                                    </div>
+                                }
                             </div>
                         </div>
                 ))}
