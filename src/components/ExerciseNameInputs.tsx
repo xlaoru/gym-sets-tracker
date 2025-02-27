@@ -115,8 +115,6 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         }
     }
 
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     function startSuperSetMode() {
         setSuperSetMode(true)
     }
@@ -132,9 +130,11 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     }
 
     function addSuperSet() {
-        // ! If exercise array length is less than 2, then return
-
         const selectedExercises: IExercise[] = exerciseList.filter((exercise): exercise is IExercise => "sets" in exercise && exercise.isSelected);
+
+        if (selectedExercises.length < 2) {
+            return
+        }
 
         const updatedSelectedExercises = selectedExercises.map((exercise) => ({
             ...exercise,
@@ -215,10 +215,6 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     }
 
     function editSuperSet() {
-        // ! If exercise array length is less than 2, then return
-
-        setSuperSetEditMode(false);
-
         const selectedSuperSet = exerciseList.filter((exercise): exercise is ISuperset => "exercises" in exercise)[0]
 
         const selectedExercises = exerciseList.filter((exercise): exercise is IExercise => "sets" in exercise && exercise.isSelected)
@@ -229,12 +225,15 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             exercises: [...selectedSuperSet.exercises.filter((exercise) => exercise.isSelected), ...selectedExercises]
         }
 
+        if (updatedSelectedSuperSet.exercises.length === 1) {
+            return
+        }
+
         const updatedMainExerciseList = mainExerciseList
             .filter((exercise) => {
                 if ("sets" in exercise) {
                     return !exercise.isSelected;
                 }
-
                 return true;
             })
             .map((exercise) => {
@@ -242,7 +241,13 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                     return updatedSelectedSuperSet;
                 }
                 return exercise;
-            });
+            })
+            .filter((exercise) => {
+                if ("exercises" in exercise) {
+                    return exercise.exercises.length > 0;
+                }
+                return true;
+            })
 
         setExerciseList([...updatedMainExerciseList, ...deselectedExercises]);
         setExerciseList((prevValue) => {
@@ -261,6 +266,8 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             }
             );
         })
+
+        setSuperSetEditMode(false);
     }
 
     function cancelSuperSetEditMode() {
