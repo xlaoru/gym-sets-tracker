@@ -26,7 +26,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     const newExerciseName = useRef<HTMLInputElement>(null)
     const newSuperSetName = useRef<HTMLInputElement>(null)
 
-    // ! Creating Exercise. Not matter: Exercise or SuperSet
+    // * Creating Exercise. Not matter: Exercise or SuperSet
     function addExercise(event: React.MouseEvent<HTMLButtonElement>) {
         event?.preventDefault()
         if (newExerciseName.current) {
@@ -41,7 +41,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setPreEditInfo(true)
     }
 
-    // ! Removing Exercise. Specially for Exercise
+    // * Removing Exercise. Specially for Exercise
     function removeExercise(index: number) {
         const updatedExerciseList = exerciseList.filter((exercise, i) => index !== i)
         setExerciseList(updatedExerciseList)
@@ -51,7 +51,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         }
     }
 
-    // ! Editing Exercise's Name. Specially fro Exercise
+    // * Editing Exercise's Name. Specially fro Exercise
     function handleChangeExerciseName(event: React.ChangeEvent<HTMLInputElement>, index: number) {
         const updatedExerciseList = exerciseList.map((exercise, i) => {
             if (index === i) {
@@ -65,7 +65,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setPreEditInfo(true)
     }
 
-    // ! Moving Exercise Up and Down. Specially for Exercise
+    // * Moving Exercise Up and Down. Specially for Exercise
     function moveExerciseUp(index: number) {
         if (index === 0) {
             return
@@ -88,7 +88,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setExerciseList(updatedExerciseList)
     }
 
-    function renderChevrons(index: number) {
+    function renderChevronsForExercise(index: number) {
         if (exerciseList.length === 1) {
             return null
         }
@@ -132,6 +132,8 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     }
 
     function addSuperSet() {
+        // ! If exercise array length is less than 2, then return
+
         const selectedExercises: IExercise[] = exerciseList.filter((exercise): exercise is IExercise => "sets" in exercise && exercise.isSelected);
 
         const updatedSelectedExercises = selectedExercises.map((exercise) => ({
@@ -221,6 +223,8 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     }
 
     function editSuperSet() {
+        // ! If exercise array length is less than 2, then return
+
         setSuperSetEditMode(false);
 
         const selectedSuperSet = exerciseList.filter((exercise): exercise is ISuperset => "exercises" in exercise)[0]
@@ -288,7 +292,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         })
     }
 
-    // ! Removing Exercise in SuperSet. Specially for SuperSet
+    // * Removing Exercise in SuperSet. Specially for SuperSet
     function removeExerciseFromSuperSet(superSet: ISuperset, index: number) {
         const updatedSuperSetExerciseList = superSet.exercises.filter((exercise, i) => index !== i);
         const updatedSuperSet = { ...superSet, exercises: updatedSuperSetExerciseList };
@@ -303,9 +307,107 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
         setExerciseList(updatedExerciseList);
     }
 
-    // ! Editing Exercise's Name in SuperSet. Specially fro SuperSet
+    // * Editing Exercise's Name in SuperSet. Specially fro SuperSet
+    function handleChangeSuperSetExerciseName(event: React.ChangeEvent<HTMLInputElement>, superSet: ISuperset, index: number) {
+        const updatedSuperSetExerciseList = superSet.exercises.map((exercise, i) => {
+            if (index === i) {
+                return { ...exercise, name: event.target.value };
+            }
+            return exercise;
+        });
 
-    // ! Moving Exercise Up and Down in SuperSet. Specially for SuperSet
+        const updatedSuperSet = { ...superSet, exercises: updatedSuperSetExerciseList };
+
+        const updatedExerciseList = exerciseList.map((exercise) => {
+            if (exercise._id === superSet._id) {
+                return updatedSuperSet;
+            }
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
+    }
+
+    // * Moving Exercise Up and Down in SuperSet. Specially for SuperSet
+    function renderChevronsForSubExercises(exercise: ISuperset, index: number) {
+        const superSetExerciseList = exercise.exercises;
+
+        if (superSetExerciseList.length === 1) {
+            return null
+        }
+
+        if (index === (superSetExerciseList.length - 1)) {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveSubExerciseUp(exercise, index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronUp size="18px" /></button>
+                </div>
+            )
+        } else if (index === 0) {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveSubExerciseDown(exercise, index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronDown size="18px" /></button>
+                </div>
+            )
+        } else {
+            return (
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingRight: "4px" }}>
+                    <button onClick={() => moveSubExerciseUp(exercise, index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronUp size="18px" /></button>
+                    <button onClick={() => moveSubExerciseDown(exercise, index)} type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none", color: "#1e1e1e", padding: 0 }} ><ChevronDown size="18px" /></button>
+                </div>
+            )
+        }
+    }
+
+    function moveSubExerciseUp(exercise: ISuperset, index: number) {
+        const superSetExerciseList = exercise.exercises;
+
+        if (index === 0) {
+            return
+        }
+
+        const updatedSuperSetExerciseList = [...superSetExerciseList];
+        const tempExercise = updatedSuperSetExerciseList[index];
+
+        updatedSuperSetExerciseList[index] = updatedSuperSetExerciseList[index - 1];
+        updatedSuperSetExerciseList[index - 1] = tempExercise;
+
+        const updatedSuperSet = { ...exercise, exercises: updatedSuperSetExerciseList };
+
+        const updatedExerciseList = exerciseList.map((exercise) => {
+            if (exercise._id === updatedSuperSet._id) {
+                return updatedSuperSet;
+            }
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
+    }
+
+    function moveSubExerciseDown(exercise: ISuperset, index: number) {
+        const superSetExerciseList = exercise.exercises;
+
+        if (index === (superSetExerciseList.length - 1)) {
+            return
+        }
+
+        const updatedSuperSetExerciseList = [...superSetExerciseList];
+        const tempExercise = updatedSuperSetExerciseList[index];
+
+        updatedSuperSetExerciseList[index] = updatedSuperSetExerciseList[index + 1];
+        updatedSuperSetExerciseList[index + 1] = tempExercise;
+
+        const updatedSuperSet = { ...exercise, exercises: updatedSuperSetExerciseList };
+
+        const updatedExerciseList = exerciseList.map((exercise) => {
+            if (exercise._id === updatedSuperSet._id) {
+                return updatedSuperSet;
+            }
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
+    }
+
     return (
         <>
             <div>
@@ -318,7 +420,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                         >
                             {isSuperSetMode && <input type="checkbox" checked={exercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForSuperSet(event, index)} />}
                             {isSuperSetEditMode && <input type="checkbox" checked={exercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleSubExerciseSelectionForSuperSet(event, false, index)} />}
-                            {!isSuperSetMode && renderChevrons(index)}
+                            {!isSuperSetMode && renderChevronsForExercise(index)}
                             <input
                                 type="text"
                                 value={exercise.name}
@@ -335,7 +437,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                         : !isSuperSetMode &&
                         <div key={index}>
                             <div style={{ display: "flex", justifyContent: "space-between", gap: "5px", backgroundColor: "#f7f7f7", borderRadius: "4px", padding: "8px", margin: "5px 0" }}>
-                                {!isSuperSetMode && renderChevrons(index)}
+                                {!isSuperSetMode && renderChevronsForExercise(index)}
                                 <div>
                                     <input style={{ textAlign: "center" }} disabled={!isSuperSetEditMode} value={exercise.name} onChange={(event) => handleChangeExerciseName(event, index)} />
                                     <div>
@@ -344,7 +446,8 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                                                 <div key={subIndex} style={{ display: "flex", justifyContent: "center" }}>
                                                     {isSuperSetEditMode && <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleSubExerciseSelectionForSuperSet(event, true, subIndex)} />}
                                                     {isSuperSetMode && <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForSuperSet(event, index)} />}
-                                                    <p style={{ margin: "4px 0 0 0" }}>{subExercise.name}</p>
+                                                    {isSuperSetEditMode && renderChevronsForSubExercises(exercise, subIndex)}
+                                                    <input value={subExercise.name} onChange={(event) => handleChangeSuperSetExerciseName(event, exercise, subIndex)} disabled={!isSuperSetEditMode} style={{ margin: "4px 0 0 0" }} />
                                                     {isSuperSetEditMode && <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} onClick={() => removeExerciseFromSuperSet(exercise, subIndex)}>
                                                         <X color="#da3633" />
                                                     </button>}
