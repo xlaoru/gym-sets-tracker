@@ -61,3 +61,42 @@ export interface IHeaderProps {
 export interface IPreEditPageProps{
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export interface IChevronsForExerciseProps {
+    index: number,
+    exerciseList: ProgramState[],
+    setExerciseList: React.Dispatch<React.SetStateAction<ProgramState[]>>;
+}
+
+export interface IChevronsForSuperSetProps extends IChevronsForExerciseProps {
+    exercise: ISuperset
+}
+
+export interface IExerciseItemProps {
+    index: number;
+    exercise: IExercise;
+    isSuperSetMode: boolean;
+    isSuperSetEditMode: boolean;
+    exerciseList: ProgramState[];
+    setExerciseList: React.Dispatch<React.SetStateAction<ProgramState[]>>;
+    handleChangeExerciseName: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+    toggleExerciseSelectionForNewSuperSet: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+    toggleExerciseSelectionForEditingSuperSet: (event: React.ChangeEvent<HTMLInputElement>, isSelected: boolean, index: number) => void;
+    removeExercise: (index: number) => void;
+}
+
+export interface ISuperSetItemProps {
+    index: number;
+    exercise: ISuperset;
+    isSuperSetMode: boolean;
+    isSuperSetEditMode: boolean;
+    exerciseList: ProgramState[];
+    setExerciseList: React.Dispatch<React.SetStateAction<ProgramState[]>>;
+    handleChangeExerciseName: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+    toggleExerciseSelectionForNewSuperSet: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+    toggleExerciseSelectionForEditingSuperSet: (event: React.ChangeEvent<HTMLInputElement>, isSelected: boolean, index: number) => void;
+    removeExercise: (index: number) => void;
+    startSuperSetEditMode: (index: number) => void;
+    handleChangeSuperSetExerciseName: (event: React.ChangeEvent<HTMLInputElement>, exercise: ISuperset, index: number) => void;
+    removeExerciseFromSuperSet: (exercise: ISuperset, index: number) => void;
+}
