@@ -2,13 +2,26 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { IExerciseSetInputsProps } from "../../utils/models";
+import { IExerciseSetInputsProps, ISuperset } from "../../utils/models";
 import { Program } from "../../utils/models";
 
-import { MinusCircle, Plus, PlusCircle, Trash } from "lucide-react";
 import ChevronsForExercise from "../Chevrons/ChevronsForExercise";
+import ChevronsForSuperSet from "../Chevrons/ChevronsForSuperSet";
+
+import { MinusCircle, Plus, PlusCircle, Trash } from "lucide-react";
 
 export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPreEditInfo }: IExerciseSetInputsProps) {
+    useEffect(() => {
+        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
+        const dayName = parsedProgram.dayName ? parsedProgram.dayName : ""
+        const program: Program = {
+            dayName,
+            exercises: exerciseList,
+            date: new Date()
+        }
+        localStorage.setItem("program", JSON.stringify(program))
+    }, [exerciseList])
+
     const newExerciseRef = useRef<HTMLInputElement>(null)
 
     function handleNameChange(event: React.ChangeEvent<HTMLInputElement>, index: number) {
@@ -161,16 +174,75 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         }
     }
 
-    useEffect(() => {
-        const parsedProgram = JSON.parse(localStorage.getItem("program") || "{}")
-        const dayName = parsedProgram.dayName ? parsedProgram.dayName : ""
-        const program: Program = {
-            dayName,
-            exercises: exerciseList,
-            date: new Date()
-        }
-        localStorage.setItem("program", JSON.stringify(program))
-    }, [exerciseList])
+    function handleChangeSuperSetExerciseName(event: React.ChangeEvent<HTMLInputElement>, superSet: ISuperset, index: number) {
+        const updatedSuperSetExerciseList = superSet.exercises.map((exercise, i) => {
+            if (index === i) {
+                return { ...exercise, name: event.target.value };
+            }
+            return exercise;
+        });
+
+        const updatedSuperSet = { ...superSet, exercises: updatedSuperSetExerciseList };
+
+        const updatedExerciseList = exerciseList.map((exercise) => {
+            if (exercise._id === superSet._id) {
+                return updatedSuperSet;
+            }
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
+    }
+
+    function removeExerciseFromSuperSet(superSet: ISuperset, index: number) {
+        const updatedSuperSetExerciseList = superSet.exercises.filter((exercise, i) => index !== i);
+        const updatedSuperSet = { ...superSet, exercises: updatedSuperSetExerciseList };
+
+        const updatedExerciseList = exerciseList.map((exercise) => {
+            if (exercise._id === superSet._id) {
+                return updatedSuperSet;
+            }
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
+    }
+
+    function handleSuperSetExerciseWeightOrRepChange(
+        event: React.ChangeEvent<HTMLInputElement>,
+        cellType: "weight" | "reps",
+        superSet: ISuperset,
+        setIndex: number,
+        rowIndex: number
+    ) {
+        const updatedSuperSetExerciseList = superSet.exercises.map((exercise, i) => {
+            if (rowIndex === i) {
+                return {
+                    ...exercise,
+                    sets:
+                        exercise.sets.map((set, jndex) =>
+                            setIndex === jndex ? {
+                                ...set, [cellType]: Number(event.target.value)
+                            } : set
+                        )
+                }
+            }
+            return exercise
+        })
+
+        const updatedSuperSet = { ...superSet, exercises: updatedSuperSetExerciseList }
+
+        const updatedExerciseList = exerciseList.map((exercise) => {
+            if (exercise._id === superSet._id) {
+                return updatedSuperSet
+            }
+            return exercise
+        })
+
+        setExerciseList(updatedExerciseList)
+    }
+
+    // TODO: Create counter for sub-exercises
 
     return (
         <>
@@ -242,13 +314,13 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                 {exercise.exercises.map((subExercise, subIndex) => (
                                     <div key={subIndex} style={{ margin: "10px", padding: "10px", border: "2.5px solid #1e1e1e", borderRadius: "4px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                            <ChevronsForExercise index={subIndex} exerciseList={exerciseList} setExerciseList={setExerciseList} />
+                                            <ChevronsForSuperSet index={subIndex} exercise={exercise} exerciseList={exerciseList} setExerciseList={setExerciseList} />
                                             <input
                                                 style={{ border: "1.6px solid black" }}
                                                 value={subExercise.name}
-                                            /* onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleNameChange(event, rowIndex)} */
+                                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSetExerciseName(event, exercise, subIndex)}
                                             />
-                                            <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} /*  onClick={() => removeExercise(rowIndex)} */>
+                                            <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} onClick={() => removeExerciseFromSuperSet(exercise, subIndex)}>
                                                 <Trash color="#da3633" />
                                             </button>
                                         </div>
@@ -263,7 +335,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                                             <input
                                                                 type="text"
                                                                 value={set.weight}
-                                                                /* onChange={(event) => handleWeightOrRepChange(event, "weight", setIndex, rowIndex)} */
+                                                                onChange={(event) => handleSuperSetExerciseWeightOrRepChange(event, "weight", exercise, setIndex, subIndex)}
                                                                 placeholder="weight (kg)"
                                                             />
                                                         </label>
@@ -272,7 +344,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                                             <input
                                                                 type="text"
                                                                 value={set.reps}
-                                                                /* onChange={(event) => handleWeightOrRepChange(event, "reps", setIndex, rowIndex)} */
+                                                                onChange={(event) => handleSuperSetExerciseWeightOrRepChange(event, "reps", exercise, setIndex, subIndex)}
                                                                 placeholder="reps"
                                                             />
                                                         </label>
