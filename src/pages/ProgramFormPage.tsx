@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ExerciseNameInputs from "../components/ExerciseNameInputs/ExerciseNameInputs";
+import ExerciseNameInputs from "../components/ExerciseNameInputs";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
 import { IProgramFormPageProps, Program, ProgramState } from "../utils/models";
