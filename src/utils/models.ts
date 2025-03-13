@@ -12,6 +12,7 @@ export interface IExercise {
     name: string;
     sets: ExerciseSet[];
     isSelected: boolean;
+    setQuantity: number;
 }
 
 export interface ISuperset {

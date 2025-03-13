@@ -34,7 +34,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                 _id: uuidv4(),
                 name: newExerciseName.current.value
             }
-            setExerciseList([...exerciseList, { _id: newExercise._id, name: newExercise.name, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }])
+            setExerciseList([...exerciseList, { _id: newExercise._id, name: newExercise.name, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false, setQuantity: 1 }])
             newExerciseName.current.value = ""
         }
 
@@ -280,6 +280,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                 {exerciseList.map((exercise, index) => (
                     "sets" in exercise
                         ? <ExerciseItem
+                            key={index}
                             index={index}
                             exercise={exercise}
                             isSuperSetMode={isSuperSetMode}
@@ -292,6 +293,7 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
                             removeExercise={removeExercise}
                         />
                         : <SuperSetItem
+                            key={index}
                             index={index}
                             exercise={exercise}
                             isSuperSetMode={isSuperSetMode}

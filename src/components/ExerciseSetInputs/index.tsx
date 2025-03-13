@@ -85,10 +85,6 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         const updatedExerciseList = exerciseList.filter((exercise, i) => index !== i)
         setExerciseList(updatedExerciseList)
 
-        setSetCount((prevSetCount) => {
-            return prevSetCount.filter((_, i) => i !== index)
-        });
-
         if (exerciseList.length === 1) {
             if (setPreEditInfo) {
                 setPreEditInfo(true)
@@ -102,76 +98,55 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
             if (newExerciseName.trim() === "") {
                 return
             }
-            const updatedExerciseList = [...exerciseList, { _id: uuidv4(), name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false }]
+            const updatedExerciseList = [...exerciseList, { _id: uuidv4(), name: newExerciseName, sets: [{ weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }, { weight: 0, reps: 0 }], isSelected: false, setQuantity: 1 }]
             setExerciseList(updatedExerciseList)
-            setSetCount((prevSetCount) => {
-                return [...prevSetCount, { count: 1 }];
-            });
+
             newExerciseRef.current.value = ""
         }
     }
 
-    const [setCount, setSetCount] = useState(() => {
-        const exercisesSetCount = exerciseList.map(() => {
-            return { count: 1 }
+    function handleExerciseSetCountChange(event: React.ChangeEvent<HTMLInputElement>, index: number) {
+        const updatedExerciseList = exerciseList.map((exercise, i) => {
+            if (index === i) {
+                if ("sets" in exercise) {
+                    const newSetQuantity = Number(event.target.value);
+                    return { ...exercise, setQuantity: newSetQuantity };
+                } else {
+                    return exercise
+                }
+            }
+            return exercise
         })
 
-        return exercisesSetCount
-    })
-
-    function handleNewSetItem(event: React.ChangeEvent<HTMLInputElement>, index: number) {
-        setSetCount((prevSetCount) => {
-            return prevSetCount.map((item, i) => {
-                if (i === index) {
-                    return { count: Number(event.target.value) };
-                }
-                return item;
-            });
-        });
+        setExerciseList(updatedExerciseList)
     }
 
-    function handleSetCounter(rowIndex: number, type: "increase" | "decrease") {
-        const exercise = exerciseList[rowIndex];
+    function handleExerciseSetCounter(rowIndex: number, type: "increase" | "decrease") {
+        const updatedExerciseList = exerciseList.map((exercise, index) => {
+            if (index === rowIndex) {
+                if ("sets" in exercise) {
+                    const updatedSetQuantity = exercise.setQuantity
+                    if (type === "increase") {
+                        const newSets = Array(updatedSetQuantity).fill(null).map(() => ({ weight: 0, reps: 0 }));
+                        const updatedSets = [...exercise.sets, ...newSets];
+                        return { ...exercise, sets: updatedSets };
+                    } else {
+                        const updatedSets = exercise.sets.slice(0, exercise.sets.length - updatedSetQuantity);
 
-        if ("exercises" in exercise) {
-            return null;
-        }
+                        if (exercise.setQuantity >= exercise.sets.length) {
+                            return exercise;
+                        }
 
-        const queryExerciseSet = exercise.sets;
-        const currentSetCount = setCount[rowIndex].count
-
-        if (type === "increase") {
-            const newSets = Array(currentSetCount).fill(null).map(() => ({ weight: 0, reps: 0 }));
-
-            setExerciseList((prevExerciseList) => {
-                const updatedSets = [...queryExerciseSet, ...newSets];
-
-                const updatedExerciseList = prevExerciseList.map((exercise, index) => {
-                    if (index === rowIndex) {
                         return { ...exercise, sets: updatedSets };
                     }
-                    return exercise;
-                });
-
-                return updatedExerciseList;
-            });
-        } else {
-            if (currentSetCount >= queryExerciseSet.length) {
-                return;
-            } else {
-                setExerciseList((prevExerciseList) => {
-                    const updatedSets = queryExerciseSet.slice(0, queryExerciseSet.length - currentSetCount)
-
-                    const updatedExerciseList = prevExerciseList.map((exercise, index) => {
-                        if (index === rowIndex) {
-                            return { ...exercise, sets: updatedSets };
-                        }
-                        return exercise;
-                    });
-                    return updatedExerciseList;
-                });
+                } else {
+                    return exercise
+                }
             }
-        }
+            return exercise;
+        });
+
+        setExerciseList(updatedExerciseList);
     }
 
     function handleChangeSuperSetExerciseName(event: React.ChangeEvent<HTMLInputElement>, superSet: ISuperset, index: number) {
@@ -242,7 +217,62 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         setExerciseList(updatedExerciseList)
     }
 
-    // TODO: Create counter for sub-exercises
+    function handleSuperSetSetCountChange(event: React.ChangeEvent<HTMLInputElement>, rowIndex: number, subIndex: number) {
+        const updatedExerciseList = exerciseList.map((exercise, i) => {
+            if (rowIndex === i) {
+                if ("exercises" in exercise) {
+                    const updatedSuperSetExerciseList = exercise.exercises.map((subExercise, j) => {
+                        if (subIndex === j) {
+                            const newSetQuantity = Number(event.target.value);
+                            return { ...subExercise, setQuantity: newSetQuantity };
+                        }
+                        return subExercise;
+                    });
+
+                    return { ...exercise, exercises: updatedSuperSetExerciseList };
+                } else {
+                    return exercise
+                }
+            }
+            return exercise
+        })
+
+        setExerciseList(updatedExerciseList)
+    }
+
+    function handleSuperSetSetCounter(rowIndex: number, subIndex: number, type: "increase" | "decrease") {
+        const updatedExerciseList = exerciseList.map((exercise, i) => {
+            if (i === rowIndex) {
+                if ("exercises" in exercise) {
+                    const updatedSuperSetExerciseList = exercise.exercises.map((subExercise, j) => {
+                        if (j === subIndex) {
+                            const updatedSetQuantity = subExercise.setQuantity;
+                            if (type === "increase") {
+                                const newSets = Array(updatedSetQuantity).fill(null).map(() => ({ weight: 0, reps: 0 }));
+                                const updatedSets = [...subExercise.sets, ...newSets];
+                                return { ...subExercise, sets: updatedSets };
+                            } else {
+                                const updatedSets = subExercise.sets.slice(0, subExercise.sets.length - updatedSetQuantity);
+
+                                if (subExercise.setQuantity >= subExercise.sets.length) {
+                                    return subExercise;
+                                }
+
+                                return { ...subExercise, sets: updatedSets };
+                            }
+                        }
+                        return subExercise;
+                    });
+
+                    return { ...exercise, exercises: updatedSuperSetExerciseList };
+                } else {
+                    return exercise
+                }
+            }
+            return exercise;
+        });
+        setExerciseList(updatedExerciseList);
+    }
 
     return (
         <>
@@ -289,9 +319,9 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                     ))
                                 }
                                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", padding: "12px 0 0 0" }}>
-                                    <PlusCircle className="icon" color="#1e1e1e" onClick={() => handleSetCounter(rowIndex, "increase")} />
-                                    <input type="text" value={setCount[rowIndex].count} onChange={(event) => handleNewSetItem(event, rowIndex)} style={{ width: "15px", textAlign: "center", border: "1.6px solid #1e1e1e" }} />
-                                    <MinusCircle className="icon" color="#1e1e1e" onClick={() => handleSetCounter(rowIndex, "decrease")} />
+                                    <PlusCircle className="icon" color="#1e1e1e" onClick={() => handleExerciseSetCounter(rowIndex, "increase")} />
+                                    <input type="text" value={exercise.setQuantity} onChange={(event) => handleExerciseSetCountChange(event, rowIndex)} style={{ width: "15px", textAlign: "center", border: "1.6px solid #1e1e1e" }} />
+                                    <MinusCircle className="icon" color="#1e1e1e" onClick={() => handleExerciseSetCounter(rowIndex, "decrease")} />
                                 </div>
                             </div>
                         </div>
@@ -311,54 +341,56 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                                 </button>
                             </div>
                             <div>
-                                {exercise.exercises.map((subExercise, subIndex) => (
-                                    <div key={subIndex} style={{ margin: "10px", padding: "10px", border: "2.5px solid #1e1e1e", borderRadius: "4px" }}>
-                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                            <ChevronsForSuperSet index={subIndex} exercise={exercise} exerciseList={exerciseList} setExerciseList={setExerciseList} />
-                                            <input
-                                                style={{ border: "1.6px solid black" }}
-                                                value={subExercise.name}
-                                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSetExerciseName(event, exercise, subIndex)}
-                                            />
-                                            <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} onClick={() => removeExerciseFromSuperSet(exercise, subIndex)}>
-                                                <Trash color="#da3633" />
-                                            </button>
-                                        </div>
-                                        <div>
-                                            {
-                                                subExercise.sets.map((set, setIndex) => (
-                                                    <div
-                                                        key={setIndex}
-                                                        style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
-                                                        <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
-                                                            weight (kg)
-                                                            <input
-                                                                type="text"
-                                                                value={set.weight}
-                                                                onChange={(event) => handleSuperSetExerciseWeightOrRepChange(event, "weight", exercise, setIndex, subIndex)}
-                                                                placeholder="weight (kg)"
-                                                            />
-                                                        </label>
-                                                        <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
-                                                            reps
-                                                            <input
-                                                                type="text"
-                                                                value={set.reps}
-                                                                onChange={(event) => handleSuperSetExerciseWeightOrRepChange(event, "reps", exercise, setIndex, subIndex)}
-                                                                placeholder="reps"
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                ))
-                                            }
-                                            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", padding: "12px 0 0 0" }}>
-                                                <PlusCircle className="icon" color="#1e1e1e" /* onClick={() => handleSetCounter(rowIndex, "increase")} */ />
-                                                <input type="text" value={setCount[rowIndex].count} onChange={(event) => handleNewSetItem(event, rowIndex)} style={{ width: "15px", textAlign: "center", border: "1.6px solid #1e1e1e" }} />
-                                                <MinusCircle className="icon" color="#1e1e1e" /* onClick={() => handleSetCounter(rowIndex, "decrease")} */ />
+                                {exercise.exercises.map((subExercise, subIndex) => {
+                                    return (
+                                        <div key={subIndex} style={{ margin: "10px", padding: "10px", border: "2.5px solid #1e1e1e", borderRadius: "4px" }}>
+                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                                <ChevronsForSuperSet index={subIndex} exercise={exercise} exerciseList={exerciseList} setExerciseList={setExerciseList} />
+                                                <input
+                                                    style={{ border: "1.6px solid black" }}
+                                                    value={subExercise.name}
+                                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChangeSuperSetExerciseName(event, exercise, subIndex)}
+                                                />
+                                                <button type="button" className="icon-button" style={{ backgroundColor: "transparent", border: "none" }} onClick={() => removeExerciseFromSuperSet(exercise, subIndex)}>
+                                                    <Trash color="#da3633" />
+                                                </button>
+                                            </div>
+                                            <div>
+                                                {
+                                                    subExercise.sets.map((set, setIndex) => (
+                                                        <div
+                                                            key={setIndex}
+                                                            style={{ display: "flex", justifyContent: "space-between", margin: "2.5px 0", gap: "2.5px" }}>
+                                                            <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                                                weight (kg)
+                                                                <input
+                                                                    type="text"
+                                                                    value={set.weight}
+                                                                    onChange={(event) => handleSuperSetExerciseWeightOrRepChange(event, "weight", exercise, setIndex, subIndex)}
+                                                                    placeholder="weight (kg)"
+                                                                />
+                                                            </label>
+                                                            <label style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "4px", fontWeight: "bold", width: "50%", textAlign: "left" }}>
+                                                                reps
+                                                                <input
+                                                                    type="text"
+                                                                    value={set.reps}
+                                                                    onChange={(event) => handleSuperSetExerciseWeightOrRepChange(event, "reps", exercise, setIndex, subIndex)}
+                                                                    placeholder="reps"
+                                                                />
+                                                            </label>
+                                                        </div>
+                                                    ))
+                                                }
+                                                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", padding: "12px 0 0 0" }}>
+                                                    <PlusCircle className="icon" color="#1e1e1e" onClick={() => handleSuperSetSetCounter(rowIndex, subIndex, "increase")} />
+                                                    <input type="text" value={subExercise.setQuantity} onChange={(event) => handleSuperSetSetCountChange(event, rowIndex, subIndex)} style={{ width: "15px", textAlign: "center", border: "1.6px solid #1e1e1e" }} />
+                                                    <MinusCircle className="icon" color="#1e1e1e" onClick={() => handleSuperSetSetCounter(rowIndex, subIndex, "decrease")} />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
                     )
