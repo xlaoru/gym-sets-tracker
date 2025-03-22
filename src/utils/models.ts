@@ -101,3 +101,7 @@ export interface ISuperSetItemProps {
     handleChangeSuperSetExerciseName: (event: React.ChangeEvent<HTMLInputElement>, exercise: ISuperset, index: number) => void;
     removeExerciseFromSuperSet: (exercise: ISuperset, index: number) => void;
 }
+
+export interface ISuperSetCreationModalProps {
+
+}
