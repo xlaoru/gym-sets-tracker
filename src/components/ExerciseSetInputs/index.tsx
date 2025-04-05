@@ -448,7 +448,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         if (isSuperSetMode) {
             return exerciseList.map((exercise, index) => {
                 if ("sets" in exercise) {
-                    return <div key={index}><input type="checkbox" onChange={(event) => toggleExerciseSelectionForNewSuperSet(event, index)} />{exercise.name}</div>
+                    return <div key={index}><input type="checkbox" onChange={(event) => toggleExerciseSelectionForNewSuperSet(event, index)} /><input disabled={isSuperSetMode} defaultValue={exercise.name} /></div>
                 } else {
                     return null
                 }
@@ -458,11 +458,23 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         if (isSuperSetEditMode) {
             return exerciseList.map((exercise, index) => {
                 if ("sets" in exercise) {
-                    return <div key={index}><input type="checkbox" onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, false, index)} /> {exercise.name}</div>
+                    return <div key={index}><input type="checkbox" onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, false, index)} /><input disabled={isSuperSetEditMode} defaultValue={exercise.name} /></div>
                 } else {
-                    return exercise.exercises.map((subExercise, subIndex) => {
-                        return <div key={subIndex}><input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, true, subIndex)} />{subExercise.name}</div>
-                    })
+                    return (
+                        <div>
+                            <input disabled={isSuperSetEditMode} defaultValue={exercise.name} />
+                            {
+                                exercise.exercises.map((subExercise, subIndex) => {
+                                    return (
+                                        <div key={subIndex}>
+                                            <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, true, subIndex)} /><input disabled={isSuperSetEditMode} defaultValue={subExercise.name} />
+                                        </div>
+                                    )
+                                }
+                                )
+                            }
+                        </div>
+                    )
                 }
             })
         }
