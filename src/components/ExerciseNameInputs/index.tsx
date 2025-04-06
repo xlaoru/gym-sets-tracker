@@ -276,7 +276,9 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
     return (
         <>
             <div>
-                {isSuperSetMode && <input placeholder="Super Set Name..." ref={newSuperSetName} defaultValue="New Super Set" />}
+                <div style={{ display: "flex" }}>
+                    {isSuperSetMode && <input style={{ padding: "8px", width: "100%" }} placeholder="Super Set Name..." ref={newSuperSetName} defaultValue="New Super Set" />}
+                </div>
                 {exerciseList.map((exercise, index) => (
                     "sets" in exercise
                         ? <ExerciseItem
@@ -313,8 +315,8 @@ export default function ExerciseNameInputs({ exerciseList, setExerciseList, hand
             {(!isSuperSetMode && !isSuperSetEditMode) &&
                 (
                     <div style={{ display: "flex", gap: "2.5px" }}>
-                        <input type="text" placeholder="Exercise Name" ref={newExerciseName} />
-                        <button type="button" onClick={addExercise} style={{ backgroundColor: "#fff", color: "#1e1e1e" }}>New Exercise</button>
+                        <input style={{ width: "60%" }} type="text" placeholder="Exercise Name" ref={newExerciseName} />
+                        <button type="button" onClick={addExercise} style={{ width: "40%", backgroundColor: "#fff", color: "#1e1e1e" }}>New Exercise</button>
                     </div>
                 )
             }

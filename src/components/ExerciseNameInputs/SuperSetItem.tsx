@@ -14,7 +14,9 @@ export default function SuperSetItem({ index, exercise, exerciseList, setExercis
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "5px", backgroundColor: "#f7f7f7", borderRadius: "4px", padding: "8px", margin: "5px 0" }}>
                     {!isSuperSetMode && <ChevronsForExercise index={index} exerciseList={exerciseList} setExerciseList={setExerciseList} />}
                     <div>
-                        <input style={{ textAlign: "center" }} disabled={isSuperSetEditMode} value={exercise.name} onChange={(event) => handleChangeExerciseName(event, index)} />
+                        <div style={{ display: "flex" }}>
+                            <input style={{ width: "100%" }} disabled={isSuperSetEditMode} value={exercise.name} onChange={(event) => handleChangeExerciseName(event, index)} />
+                        </div>
                         <div>
                             {exercise.exercises.map((subExercise, subIndex) => {
                                 return (

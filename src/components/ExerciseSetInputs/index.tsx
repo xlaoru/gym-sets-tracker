@@ -448,7 +448,12 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         if (isSuperSetMode) {
             return exerciseList.map((exercise, index) => {
                 if ("sets" in exercise) {
-                    return <div key={index}><input type="checkbox" onChange={(event) => toggleExerciseSelectionForNewSuperSet(event, index)} /><input disabled={isSuperSetMode} defaultValue={exercise.name} /></div>
+                    return (
+                        <div key={index} style={{ display: "flex" }}>
+                            <input type="checkbox" onChange={(event) => toggleExerciseSelectionForNewSuperSet(event, index)} />
+                            <input style={{ width: "100%" }} disabled={isSuperSetMode} defaultValue={exercise.name} />
+                        </div>
+                    )
                 } else {
                     return null
                 }
@@ -458,21 +463,31 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
         if (isSuperSetEditMode) {
             return exerciseList.map((exercise, index) => {
                 if ("sets" in exercise) {
-                    return <div key={index}><input type="checkbox" onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, false, index)} /><input disabled={isSuperSetEditMode} defaultValue={exercise.name} /></div>
+                    return (
+                        <div key={index} style={{ display: "flex" }}>
+                            <ChevronsForExercise index={index} exerciseList={exerciseList} setExerciseList={setExerciseList} />
+                            <input type="checkbox" onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, false, index)} />
+                            <input style={{ width: "100%" }} disabled={isSuperSetEditMode} defaultValue={exercise.name} />
+                        </div>
+                    )
                 } else {
                     return (
-                        <div>
-                            <input disabled={isSuperSetEditMode} defaultValue={exercise.name} />
-                            {
-                                exercise.exercises.map((subExercise, subIndex) => {
-                                    return (
-                                        <div key={subIndex}>
-                                            <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, true, subIndex)} /><input disabled={isSuperSetEditMode} defaultValue={subExercise.name} />
-                                        </div>
+                        <div key={index} style={{ display: "flex", justifyContent: "space-between", backgroundColor: "rgb(247, 247, 247)", padding: "8px", borderRadius: "4px", }}>
+                            <ChevronsForExercise index={index} exerciseList={exerciseList} setExerciseList={setExerciseList} />
+                            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                                <input disabled={isSuperSetEditMode} defaultValue={exercise.name} />
+                                {
+                                    exercise.exercises.map((subExercise, subIndex) => {
+                                        return (
+                                            <div key={subIndex} style={{ display: "flex" }}>
+                                                <input type="checkbox" checked={subExercise.isSelected} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleExerciseSelectionForEditingSuperSet(event, true, subIndex)} />
+                                                <input style={{ width: "100%" }} disabled={isSuperSetEditMode} defaultValue={subExercise.name} />
+                                            </div>
+                                        )
+                                    }
                                     )
                                 }
-                                )
-                            }
+                            </div>
                         </div>
                     )
                 }
@@ -638,7 +653,7 @@ export default function ExerciseSetInputs({ exerciseList, setExerciseList, setPr
                             </button>
                             {
                                 !isSuperSetMode && <button type="button"
-                                    style={{ backgroundColor: "#fff", color: "#1e1e1e", marginBottom: "10px" }}
+                                    style={{ backgroundColor: "rgb(248, 246, 246)", border: "1px solid rgb(170, 170, 170)", color: "#1e1e1e", marginBottom: "10px" }}
                                     onClick={() => setSuperSetMode(true)}
                                 >Create Super Set</button>
                             }
