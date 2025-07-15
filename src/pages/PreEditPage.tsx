@@ -40,6 +40,7 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
         event?.preventDefault()
 
         setLoading(true)
+        setPreEditInfo(false)
 
         const program: Program = {
             ...JSON.parse(localStorage.getItem("program") ?? ""),
@@ -53,6 +54,9 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
             setExerciseList([])
             setLoading(false)
             navigate("/")
+        }).catch((error) => {
+            setLoading(false);
+            setPreEditInfo(true)
         })
     }
 

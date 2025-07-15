@@ -26,7 +26,6 @@ export interface ExerciseSet {
     weight: number;
 }
 
-
 export interface IProgramTableProps {
     program: Program;
 }
