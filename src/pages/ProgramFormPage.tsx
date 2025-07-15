@@ -45,6 +45,7 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
         event?.preventDefault()
 
         setLoading(true)
+        setPreEditInfo(false)
 
         const program: Program = {
             dayName,
@@ -60,6 +61,9 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
             setDayName("")
             setLoading(false)
             navigate("/")
+        }).catch((error) => {
+            setLoading(false)
+            setPreEditInfo(true)
         })
     }
 
