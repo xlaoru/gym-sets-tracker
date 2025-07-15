@@ -45,22 +45,40 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                     </caption>
                     {program.exercises.map((exercise, index) => (
                         <tbody key={index}>
-                            <tr>
-                                <th>{exercise.name}</th>
-                                <th>Weight (kg)</th>
-                                <th>Reps</th>
-                            </tr>
-                            {
-                                "sets" in exercise
-                                    ? exercise.sets.map((exerciseSet, index) => (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
+                        {"sets" in exercise
+                            ? (
+                                <>
+                                    <tr>
+                                        <th>{exercise.name}</th>
+                                        <th>Weight (kg)</th>
+                                        <th>Reps</th>
+                                    </tr>
+                                    {exercise.sets.map((exerciseSet, setIndex) => (
+                                        <tr key={setIndex}>
+                                            <td>{setIndex + 1}</td>
                                             <td>{exerciseSet.weight}</td>
                                             <td>{exerciseSet.reps}</td>
                                         </tr>
-                                    ))
-                                    : null
-                            }
+                                    ))}
+                                </>
+                            )
+                            : (
+                                <>
+                                    <tr>
+                                        <th colSpan={3}>{exercise.name}</th>
+                                    </tr>
+                                    {exercise.exercises.map((subExercise, subIndex) => (
+                                        <tr>
+                                            <td key={subIndex}>{subExercise.name}</td>
+
+                                            {subExercise.sets.map((subExerciseSet, subSetIndex) => (
+                                                <td key={subSetIndex}>{subExerciseSet.weight} (kg) / {subExerciseSet.reps} (reps)</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </>
+                            )
+                        }
                         </tbody>
                     ))}
                 </table>
