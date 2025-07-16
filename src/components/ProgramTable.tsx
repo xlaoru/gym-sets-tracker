@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { IProgramTableProps } from "../utils/models";
 
 import { Trash, FilePenLine } from 'lucide-react';
-import { useState } from "react";
+import React, { useState } from "react";
 
 import Loader from "../components/Loader"
 import { AppDispatch } from "../store";
@@ -45,40 +45,40 @@ export default function ProgramTable({ program }: IProgramTableProps) {
                     </caption>
                     {program.exercises.map((exercise, index) => (
                         <tbody key={index}>
-                        {"sets" in exercise
-                            ? (
-                                <>
-                                    <tr>
-                                        <th>{exercise.name}</th>
-                                        <th>Weight (kg)</th>
-                                        <th>Reps</th>
-                                    </tr>
-                                    {exercise.sets.map((exerciseSet, setIndex) => (
-                                        <tr key={setIndex}>
-                                            <td>{setIndex + 1}</td>
-                                            <td>{exerciseSet.weight}</td>
-                                            <td>{exerciseSet.reps}</td>
-                                        </tr>
-                                    ))}
-                                </>
-                            )
-                            : (
-                                <>
-                                    <tr>
-                                        <th colSpan={3}>{exercise.name}</th>
-                                    </tr>
-                                    {exercise.exercises.map((subExercise, subIndex) => (
+                            {"sets" in exercise
+                                ? (
+                                    <React.Fragment key={index}>
                                         <tr>
-                                            <td key={subIndex}>{subExercise.name}</td>
-
-                                            {subExercise.sets.map((subExerciseSet, subSetIndex) => (
-                                                <td key={subSetIndex}>{subExerciseSet.weight} (kg) / {subExerciseSet.reps} (reps)</td>
-                                            ))}
+                                            <th>{exercise.name}</th>
+                                            <th>Weight (kg)</th>
+                                            <th>Reps</th>
                                         </tr>
-                                    ))}
-                                </>
-                            )
-                        }
+                                        {exercise.sets.map((exerciseSet, setIndex) => (
+                                            <tr key={setIndex}>
+                                                <td>{setIndex + 1}</td>
+                                                <td>{exerciseSet.weight}</td>
+                                                <td>{exerciseSet.reps}</td>
+                                            </tr>
+                                        ))}
+                                    </React.Fragment>
+                                )
+                                : (
+                                    <React.Fragment key={index}>
+                                        <tr>
+                                            <th colSpan={3}>{exercise.name}</th>
+                                        </tr>
+                                        {exercise.exercises.map((subExercise, subIndex) => (
+                                            <tr key={subIndex}>
+                                                <td>{subExercise.name}</td>
+
+                                                {subExercise.sets.map((subExerciseSet, subSetIndex) => (
+                                                    <td key={subSetIndex}>{subExerciseSet.weight} (kg) / {subExerciseSet.reps} (reps)</td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </React.Fragment>
+                                )
+                            }
                         </tbody>
                     ))}
                 </table>
