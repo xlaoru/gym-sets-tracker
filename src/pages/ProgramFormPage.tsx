@@ -3,13 +3,17 @@ import ExerciseNameInputs from "../components/ExerciseNameInputs";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
 import { IExercise, IProgramFormPageProps, Program } from "../utils/models";
-import { createProgram } from "../services";
 import { useNavigate } from "react-router-dom";
 
 import Loader from "../components/Loader";
+import { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { createProgram } from "../store/ProgramSlice";
 
 export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProps) {
     const navigate = useNavigate()
+
+    const dispatch: AppDispatch = useDispatch()
 
     useEffect(() => {
         localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
@@ -41,6 +45,7 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
         event?.preventDefault()
 
         setLoading(true)
+        setPreEditInfo(false)
 
         const program: Program = {
             dayName,
@@ -48,7 +53,7 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
             date: new Date()
         }
 
-        createProgram(program).then(() => {
+        dispatch(createProgram(program)).then(() => {
             localStorage.setItem("program", JSON.stringify({ dayName: "", exercises: [], date: "" }))
             setPreEditInfo(false)
             setExerciseList([])
@@ -56,6 +61,9 @@ export default function ProgramFormPage({ setPreEditInfo }: IProgramFormPageProp
             setDayName("")
             setLoading(false)
             navigate("/")
+        }).catch((error) => {
+            setLoading(false)
+            setPreEditInfo(true)
         })
     }
 

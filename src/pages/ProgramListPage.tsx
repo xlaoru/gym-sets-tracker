@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { getPrograms, selectPrograms } from "../store/ProgramSlice";
+import { AppDispatch } from "../store";
+
 import ProgramTable from "../components/ProgramTable";
 
-import { getPrograms } from "../services";
-
-import { Program } from "../utils/models";
 import Loader from "../components/Loader";
 
 export default function ProgramListPage() {
-    const [programs, setPrograms] = useState<Program[] | []>([]);
     const [hasLoaded, setLoaded] = useState(false)
 
+    const programs = useSelector(selectPrograms)
+    const dispatch: AppDispatch = useDispatch()
+
     useEffect(() => {
-        getPrograms().then((response) => {
-            setPrograms(response.data);
+        dispatch(getPrograms()).then(() => {
             setLoaded(true)
-        });
-    }, []);
+        })
+    }, [dispatch])
 
     return (
         <>

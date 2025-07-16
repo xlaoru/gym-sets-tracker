@@ -1,20 +1,26 @@
 export interface Program {
     _id?: string;
     dayName: string;
-    exercises: IExercise[];
+    exercises: TProgram[];
     date: Date;
 }
+
+export type TProgram = IExercise | ISuperset;
 
 export interface IExercise {
     name: string;
     sets: ExerciseSet[]
 }
 
+export interface ISuperset {
+    name: string;
+    exercises: IExercise[];
+}
+
 export interface ExerciseSet {
     reps: number;
     weight: number;
 }
-
 
 export interface IProgramTableProps {
     program: Program;
