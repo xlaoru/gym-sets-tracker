@@ -10,6 +10,8 @@ import Loader from "../components/Loader";
 
 export default function ProgramListPage() {
     const [hasLoaded, setLoaded] = useState(false);
+    const [isReadyToNavigate, setReadyToNavigate] = useState(false);
+
     const page = useSelector(selectPage);
 
     const programs = useSelector(selectPrograms);
@@ -18,6 +20,7 @@ export default function ProgramListPage() {
     useEffect(() => {
         dispatch(getPrograms({ page, limit: 10 })).then(() => {
             setLoaded(true);
+            setReadyToNavigate(true);
         });
     }, [dispatch, page]);
 
@@ -32,7 +35,10 @@ export default function ProgramListPage() {
                         </div>
                     ))}
                     <div className="container">
-                        <PaginationFooter />
+                        <PaginationFooter
+                            isReadyToNavigate={isReadyToNavigate}
+                            setReadyToNavigate={setReadyToNavigate}
+                        />
                     </div>
                 </div>
             ) : (

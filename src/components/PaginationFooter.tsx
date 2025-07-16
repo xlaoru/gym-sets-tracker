@@ -3,7 +3,12 @@ import Pagination from "@mui/material/Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { moveToPage, selectPage, selectPages } from "../store/ProgramSlice";
 
-export default function PaginationFooter() {
+import { IPaginationFooterProps } from "../utils/models";
+
+export default function PaginationFooter({
+    isReadyToNavigate,
+    setReadyToNavigate,
+}: IPaginationFooterProps) {
     const pages = useSelector(selectPages);
     const page = useSelector(selectPage);
 
@@ -11,12 +16,18 @@ export default function PaginationFooter() {
 
     function handleChange(event: React.ChangeEvent<unknown>, value: number) {
         event.preventDefault();
+        setReadyToNavigate(false);
         dispatch(moveToPage(value));
     }
 
     return (
         <>
-            <Pagination count={pages} page={page} onChange={handleChange} />
+            <Pagination
+                count={pages}
+                page={page}
+                onChange={handleChange}
+                disabled={!isReadyToNavigate}
+            />
         </>
     );
 }

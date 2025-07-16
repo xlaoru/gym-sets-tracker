@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface Program {
     _id?: string;
     dayName: string;
@@ -9,7 +11,7 @@ export type TProgram = IExercise | ISuperset;
 
 export interface IExercise {
     name: string;
-    sets: ExerciseSet[]
+    sets: ExerciseSet[];
 }
 
 export interface ISuperset {
@@ -40,20 +42,25 @@ export interface IExerciseSetInputsProps {
     exerciseList: IExercise[];
     setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
     setPreEditInfo?: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export interface IExerciseNameInputsProps {
     exerciseList: IExercise[];
     setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
     handleNextFormStep: () => void;
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export interface IHeaderProps {
-    hasPreEditInfo: boolean
+    hasPreEditInfo: boolean;
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export interface IPreEditPageProps{
+export interface IPreEditPageProps {
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface IPaginationFooterProps {
+    isReadyToNavigate: boolean;
+    setReadyToNavigate: React.Dispatch<React.SetStateAction<boolean>>;
 }
