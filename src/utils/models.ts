@@ -61,6 +61,5 @@ export interface IPreEditPageProps {
 }
 
 export interface IPaginationFooterProps {
-    isReadyToNavigate: boolean;
-    setReadyToNavigate: React.Dispatch<React.SetStateAction<boolean>>;
+    isLoading: boolean;
 }

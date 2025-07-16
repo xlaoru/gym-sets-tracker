@@ -9,8 +9,7 @@ import PaginationFooter from "../components/PaginationFooter";
 import Loader from "../components/Loader";
 
 export default function ProgramListPage() {
-    const [hasLoaded, setLoaded] = useState(false);
-    const [isReadyToNavigate, setReadyToNavigate] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     const page = useSelector(selectPage);
 
@@ -18,15 +17,22 @@ export default function ProgramListPage() {
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getPrograms({ page, limit: 10 })).then(() => {
-            setLoaded(true);
-            setReadyToNavigate(true);
-        });
+        setLoading(true);
+
+        dispatch(getPrograms({ page, limit: 10 }))
+            .then(() => {
+                setLoading(false);
+            })
+            .catch((error) => {
+                setLoading(true);
+            });
     }, [dispatch, page]);
 
     return (
         <>
-            {programs && hasLoaded ? (
+            {programs && isLoading ? (
+                <Loader />
+            ) : (
                 <div>
                     {programs.map((program, index) => (
                         <div className="container" key={index}>
@@ -35,14 +41,9 @@ export default function ProgramListPage() {
                         </div>
                     ))}
                     <div className="container">
-                        <PaginationFooter
-                            isReadyToNavigate={isReadyToNavigate}
-                            setReadyToNavigate={setReadyToNavigate}
-                        />
+                        <PaginationFooter isLoading={isLoading} />
                     </div>
                 </div>
-            ) : (
-                <Loader />
             )}
         </>
     );

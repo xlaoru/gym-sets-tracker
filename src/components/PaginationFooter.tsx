@@ -6,8 +6,7 @@ import { moveToPage, selectPage, selectPages } from "../store/ProgramSlice";
 import { IPaginationFooterProps } from "../utils/models";
 
 export default function PaginationFooter({
-    isReadyToNavigate,
-    setReadyToNavigate,
+    isLoading,
 }: IPaginationFooterProps) {
     const pages = useSelector(selectPages);
     const page = useSelector(selectPage);
@@ -16,7 +15,6 @@ export default function PaginationFooter({
 
     function handleChange(event: React.ChangeEvent<unknown>, value: number) {
         event.preventDefault();
-        setReadyToNavigate(false);
         dispatch(moveToPage(value));
     }
 
@@ -26,7 +24,7 @@ export default function PaginationFooter({
                 count={pages}
                 page={page}
                 onChange={handleChange}
-                disabled={!isReadyToNavigate}
+                disabled={isLoading}
             />
         </>
     );
