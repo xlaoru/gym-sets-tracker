@@ -9,7 +9,7 @@ import PaginationFooter from "../components/PaginationFooter";
 import Loader from "../components/Loader";
 
 export default function ProgramListPage() {
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
 
     const page = useSelector(selectPage);
 
