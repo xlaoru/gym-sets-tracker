@@ -9,8 +9,6 @@ export default function MovementChevrons({
 }: IMovementChevronsProps) {
     const currentIndex = list.findIndex((item) => item.id === id);
 
-    console.log(id, currentIndex);
-
     function moveExerciseUp(index: number) {
         if (index === 0) return;
 
