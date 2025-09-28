@@ -53,6 +53,12 @@ export interface IExerciseNameInputsProps {
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+export interface IMovementChevronsProps {
+    id: string;
+    list: IExercise[];
+    setList: React.Dispatch<React.SetStateAction<IExercise[]>>;
+}
+
 export interface IHeaderProps {
     hasPreEditInfo: boolean;
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;

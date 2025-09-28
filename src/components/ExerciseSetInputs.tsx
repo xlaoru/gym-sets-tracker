@@ -11,6 +11,7 @@ import {
     PlusCircle,
     Trash,
 } from "lucide-react";
+import MovementChevrons from "./MovementChevrons";
 
 export default function ExerciseSetInputs({
     exerciseList,
@@ -89,7 +90,7 @@ export default function ExerciseSetInputs({
         );
     }
 
-    function editExericiseRep(id: string, index: number, reps: number) {
+    function editExerciseRep(id: string, index: number, reps: number) {
         setExerciseList((prevExercises) =>
             prevExercises.map((prevExercise) =>
                 prevExercise.id === id
@@ -122,6 +123,11 @@ export default function ExerciseSetInputs({
                             alignItems: "center",
                         }}
                     >
+                        <MovementChevrons
+                            id={exercise.id}
+                            list={exerciseList}
+                            setList={setExerciseList}
+                        />
                         <input
                             style={{ border: "1.6px solid black" }}
                             value={exercise.name}
@@ -197,7 +203,7 @@ export default function ExerciseSetInputs({
                                         value={set.reps}
                                         placeholder="reps"
                                         onChange={(event) => {
-                                            editExericiseRep(
+                                            editExerciseRep(
                                                 exercise.id,
                                                 setIndex,
                                                 Number(event.target.value)
