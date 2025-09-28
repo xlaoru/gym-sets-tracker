@@ -10,11 +10,13 @@ export interface Program {
 export type TProgram = IExercise | ISuperset;
 
 export interface IExercise {
+    id: string;
     name: string;
     sets: ExerciseSet[];
 }
 
 export interface ISuperset {
+    id: string;
     name: string;
     exercises: IExercise[];
 }
