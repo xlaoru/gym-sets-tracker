@@ -125,189 +125,225 @@ export default function ExerciseSetInputs({
 
     /* <-- Superset Handlers -->*/
 
-    return (
-        <>
-            {program.map((exercise, rowIndex) => (
+    /* <-- Data Displaying --> */
+
+    function renderTable() {
+        if (false) {
+            return <div>superset mode</div>;
+        } else {
+            return (
                 <div>
-                    {"sets" in exercise ? (
-                        <div
-                            key={rowIndex}
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                margin: "10px 0",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <MovementChevrons
-                                    id={exercise.id}
-                                    list={program}
-                                    setList={setProgram}
-                                />
-                                <input
-                                    style={{ border: "1.6px solid black" }}
-                                    value={exercise.name}
-                                    onChange={(event) =>
-                                        editExerciseName(
-                                            exercise.id,
-                                            event.target.value
-                                        )
-                                    }
-                                />
-                                <button
-                                    type="button"
-                                    className="icon-button"
+                    {program.map((exercise, rowIndex) => (
+                        <div>
+                            {"sets" in exercise ? (
+                                <div
+                                    key={rowIndex}
                                     style={{
-                                        backgroundColor: "transparent",
-                                        border: "none",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        margin: "10px 0",
                                     }}
-                                    onClick={() => removeExercise(exercise.id)}
                                 >
-                                    <Trash color="#da3633" />
-                                </button>
-                            </div>
-                            <div>
-                                {exercise.sets.map((set, setIndex) => (
                                     <div
-                                        key={setIndex}
                                         style={{
                                             display: "flex",
                                             justifyContent: "space-between",
-                                            margin: "2.5px 0",
-                                            gap: "2.5px",
+                                            alignItems: "center",
                                         }}
                                     >
-                                        <label
+                                        <MovementChevrons
+                                            id={exercise.id}
+                                            list={program}
+                                            setList={setProgram}
+                                        />
+                                        <input
                                             style={{
-                                                fontSize: "12px",
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                gap: "4px",
-                                                fontWeight: "bold",
-                                                width: "50%",
-                                                textAlign: "left",
+                                                border: "1.6px solid black",
                                             }}
-                                        >
-                                            weight (kg)
-                                            <input
-                                                type="text"
-                                                value={set.weight}
-                                                placeholder="weight (kg)"
-                                                onChange={(event) => {
-                                                    editExerciseWeight(
-                                                        exercise.id,
-                                                        setIndex,
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                }}
-                                            />
-                                        </label>
-                                        <label
+                                            value={exercise.name}
+                                            onChange={(event) =>
+                                                editExerciseName(
+                                                    exercise.id,
+                                                    event.target.value
+                                                )
+                                            }
+                                        />
+                                        <button
+                                            type="button"
+                                            className="icon-button"
                                             style={{
-                                                fontSize: "12px",
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                gap: "4px",
-                                                fontWeight: "bold",
-                                                width: "50%",
-                                                textAlign: "left",
+                                                backgroundColor: "transparent",
+                                                border: "none",
                                             }}
+                                            onClick={() =>
+                                                removeExercise(exercise.id)
+                                            }
                                         >
-                                            reps
-                                            <input
-                                                type="text"
-                                                value={set.reps}
-                                                placeholder="reps"
-                                                onChange={(event) => {
-                                                    editExerciseRep(
-                                                        exercise.id,
-                                                        setIndex,
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                }}
-                                            />
-                                        </label>
+                                            <Trash color="#da3633" />
+                                        </button>
                                     </div>
-                                ))}
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        gap: "8px",
-                                        padding: "12px 0 0 0",
-                                    }}
-                                >
-                                    <PlusCircle
-                                        className="icon"
-                                        color="#1e1e1e"
-                                        onClick={() =>
-                                            incrementSetCount(exercise.id)
-                                        }
-                                    />
-                                    <input
-                                        type="text"
-                                        disabled={true}
-                                        value={exercise.sets.length}
-                                        style={{
-                                            width: "15px",
-                                            textAlign: "center",
-                                            border: "1.6px solid #1e1e1e",
-                                        }}
-                                    />
-                                    <MinusCircle
-                                        className="icon"
-                                        color="#1e1e1e"
-                                        onClick={() =>
-                                            decrementSetCount(exercise.id)
-                                        }
-                                    />
+                                    <div>
+                                        {exercise.sets.map((set, setIndex) => (
+                                            <div
+                                                key={setIndex}
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent:
+                                                        "space-between",
+                                                    margin: "2.5px 0",
+                                                    gap: "2.5px",
+                                                }}
+                                            >
+                                                <label
+                                                    style={{
+                                                        fontSize: "12px",
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        gap: "4px",
+                                                        fontWeight: "bold",
+                                                        width: "50%",
+                                                        textAlign: "left",
+                                                    }}
+                                                >
+                                                    weight (kg)
+                                                    <input
+                                                        type="text"
+                                                        value={set.weight}
+                                                        placeholder="weight (kg)"
+                                                        onChange={(event) => {
+                                                            editExerciseWeight(
+                                                                exercise.id,
+                                                                setIndex,
+                                                                Number(
+                                                                    event.target
+                                                                        .value
+                                                                )
+                                                            );
+                                                        }}
+                                                    />
+                                                </label>
+                                                <label
+                                                    style={{
+                                                        fontSize: "12px",
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        gap: "4px",
+                                                        fontWeight: "bold",
+                                                        width: "50%",
+                                                        textAlign: "left",
+                                                    }}
+                                                >
+                                                    reps
+                                                    <input
+                                                        type="text"
+                                                        value={set.reps}
+                                                        placeholder="reps"
+                                                        onChange={(event) => {
+                                                            editExerciseRep(
+                                                                exercise.id,
+                                                                setIndex,
+                                                                Number(
+                                                                    event.target
+                                                                        .value
+                                                                )
+                                                            );
+                                                        }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        ))}
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: "8px",
+                                                padding: "12px 0 0 0",
+                                            }}
+                                        >
+                                            <PlusCircle
+                                                className="icon"
+                                                color="#1e1e1e"
+                                                onClick={() =>
+                                                    incrementSetCount(
+                                                        exercise.id
+                                                    )
+                                                }
+                                            />
+                                            <input
+                                                type="text"
+                                                disabled={true}
+                                                value={exercise.sets.length}
+                                                style={{
+                                                    width: "15px",
+                                                    textAlign: "center",
+                                                    border: "1.6px solid #1e1e1e",
+                                                }}
+                                            />
+                                            <MinusCircle
+                                                className="icon"
+                                                color="#1e1e1e"
+                                                onClick={() =>
+                                                    decrementSetCount(
+                                                        exercise.id
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null}
                         </div>
-                    ) : null}
+                    ))}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <input
+                            type="text"
+                            style={{ border: "1.6px solid #1e1e1e" }}
+                            placeholder="New Exercise Name..."
+                            value={exerciseName}
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => setExerciseName(event.target.value)}
+                        />
+                        <div style={{ display: "flex", gap: 10 }}>
+                            <button
+                                type="button"
+                                style={{
+                                    backgroundColor: "transparent",
+                                    color: "#1e1e1e",
+                                    border: "1px solid #1e1e1e",
+                                    width: "100%",
+                                    margin: "10px 0",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                }}
+                                onClick={addNewExercise}
+                            >
+                                New Exercise
+                            </button>
+                            <button
+                                type="button"
+                                style={{
+                                    backgroundColor: "transparent",
+                                    color: "#1e1e1e",
+                                    border: "1px solid #1e1e1e",
+                                    width: "100%",
+                                    margin: "10px 0",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                New Superset
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" style={{ width: "100%" }}>
+                        Submit
+                    </button>
                 </div>
-            ))}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-                <input
-                    type="text"
-                    style={{ border: "1.6px solid #1e1e1e" }}
-                    placeholder="New Exercise Name..."
-                    value={exerciseName}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setExerciseName(event.target.value)
-                    }
-                />
-                <button
-                    type="button"
-                    className="icon-button"
-                    style={{
-                        backgroundColor: "transparent",
-                        color: "#1e1e1e",
-                        border: "1px solid #1e1e1e",
-                        width: "100%",
-                        margin: "10px 0",
-                        display: "flex",
-                        justifyContent: "center",
-                    }}
-                    onClick={addNewExercise}
-                >
-                    New Exercise
-                </button>
-            </div>
-            <button type="submit" style={{ width: "100%" }}>
-                Submit
-            </button>
-        </>
-    );
+            );
+        }
+    }
+
+    return <>{renderTable()}</>;
 }
