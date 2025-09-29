@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ExerciseNameInputs from "../components/ExerciseNameInputs";
 import ExerciseSetInputs from "../components/ExerciseSetInputs";
 
-import { IExercise, IProgramFormPageProps, Program } from "../utils/models";
+import { IProgramFormPageProps, Program, TProgram } from "../utils/models";
 import { useNavigate } from "react-router-dom";
 
 import Loader from "../components/Loader";
@@ -25,7 +25,7 @@ export default function ProgramFormPage({
         setPreEditInfo(false);
     }, [setPreEditInfo]);
 
-    const [exerciseList, setExerciseList] = useState<IExercise[]>([]);
+    const [program, setProgram] = useState<TProgram[]>([]);
     const [isExerciseNameMode, setExerciseNameMode] = useState(true);
     const [dayName, setDayName] = useState("");
 
@@ -54,20 +54,20 @@ export default function ProgramFormPage({
         setLoading(true);
         setPreEditInfo(false);
 
-        const program: Program = {
+        const newProgram: Program = {
             dayName,
-            exercises: exerciseList,
+            exercises: program,
             date: new Date(),
         };
 
-        dispatch(createProgram(program))
+        dispatch(createProgram(newProgram))
             .then(() => {
                 localStorage.setItem(
                     "program",
                     JSON.stringify({ dayName: "", exercises: [], date: "" })
                 );
                 setPreEditInfo(false);
-                setExerciseList([]);
+                setProgram([]);
                 setExerciseNameMode(true);
                 setDayName("");
                 setLoading(false);
@@ -125,8 +125,8 @@ export default function ProgramFormPage({
                     {/*:*/}
                     <ExerciseSetInputs
                         setPreEditInfo={setPreEditInfo}
-                        exerciseList={exerciseList}
-                        setExerciseList={setExerciseList}
+                        program={program}
+                        setProgram={setProgram}
                     />
                     {/*}*/}
                 </form>

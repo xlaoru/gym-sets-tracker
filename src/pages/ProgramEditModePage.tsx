@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { editProgram } from "../store/ProgramSlice";
 
 export default function ProgramEditModePage() {
-    const navigate = useNavigate();
+    /*const navigate = useNavigate();
 
     const dispatch: AppDispatch = useDispatch()
 
@@ -57,11 +57,11 @@ export default function ProgramEditModePage() {
             setLoading(false)
             navigate("/")
         })
-    }
+    }*/
 
     return (
         <div className="container-absolute-center">
-            {
+            {/*{
                 isLoading
                     ? <Loader />
                     : <form className="form" onSubmit={handleSubmit}>
@@ -72,7 +72,7 @@ export default function ProgramEditModePage() {
                         />
                         <ExerciseSetInputs exerciseList={exerciseList} setExerciseList={setExerciseList} />
                     </form>
-            }
+            }*/}
         </div>
     );
 }

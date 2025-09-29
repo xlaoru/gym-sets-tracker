@@ -3,19 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { IExerciseSetInputsProps } from "../utils/models";
 import { Program } from "../utils/models";
 
-import {
-    ChevronDown,
-    ChevronUp,
-    MinusCircle,
-    Plus,
-    PlusCircle,
-    Trash,
-} from "lucide-react";
+import { MinusCircle, PlusCircle, Trash } from "lucide-react";
 import MovementChevrons from "./MovementChevrons";
 
 export default function ExerciseSetInputs({
-    exerciseList,
-    setExerciseList,
+    program,
+    setProgram,
     setPreEditInfo,
 }: IExerciseSetInputsProps) {
     const [exerciseName, setExerciseName] = useState<string>("");
@@ -25,13 +18,13 @@ export default function ExerciseSetInputs({
             localStorage.getItem("program") || "{}"
         );
         const dayName = parsedProgram.dayName ? parsedProgram.dayName : "";
-        const program: Program = {
+        const myProgram: Program = {
             dayName,
-            exercises: exerciseList,
+            exercises: program,
             date: new Date(),
         };
-        localStorage.setItem("program", JSON.stringify(program));
-    }, [exerciseList]);
+        localStorage.setItem("program", JSON.stringify(myProgram));
+    }, [program]);
 
     /* <-- Exercise Handlers --> */
 
@@ -46,12 +39,12 @@ export default function ExerciseSetInputs({
             ],
         };
 
-        setExerciseList([...exerciseList, newExercise]);
+        setProgram([...program, newExercise]);
         setExerciseName("");
     }
 
     function editExerciseName(id: string, text: string) {
-        setExerciseList((prevExercises) =>
+        setProgram((prevExercises) =>
             prevExercises.map((prevExercise) =>
                 prevExercise.id === id
                     ? {
@@ -64,19 +57,15 @@ export default function ExerciseSetInputs({
     }
 
     function removeExercise(id: string) {
-        setExerciseList((prevExercises) =>
-            prevExercises.filter((prevExercise) =>
-                prevExercise.id === id ? false : true
-            )
+        setProgram((prevExercises) =>
+            prevExercises.filter((prevExercise) => prevExercise.id !== id)
         );
     }
 
-    /* <-- Set Handlers --> */
-
     function editExerciseWeight(id: string, index: number, weights: number) {
-        setExerciseList((prevExercises) =>
+        setProgram((prevExercises) =>
             prevExercises.map((prevExercise) =>
-                prevExercise.id === id
+                prevExercise.id === id && "sets" in prevExercise
                     ? {
                           ...prevExercise,
                           sets: prevExercise.sets.map((set, setIndex) =>
@@ -91,9 +80,9 @@ export default function ExerciseSetInputs({
     }
 
     function editExerciseRep(id: string, index: number, reps: number) {
-        setExerciseList((prevExercises) =>
+        setProgram((prevExercises) =>
             prevExercises.map((prevExercise) =>
-                prevExercise.id === id
+                prevExercise.id === id && "sets" in prevExercise
                     ? {
                           ...prevExercise,
                           sets: prevExercise.sets.map((set, setIndex) =>
@@ -105,135 +94,188 @@ export default function ExerciseSetInputs({
         );
     }
 
+    function incrementSetCount(id: string) {
+        setProgram((prevExercises) =>
+            prevExercises.map((prevExercise) =>
+                prevExercise.id === id && "sets" in prevExercise
+                    ? {
+                          ...prevExercise,
+                          sets: [...prevExercise.sets, { weight: 0, reps: 0 }],
+                      }
+                    : prevExercise
+            )
+        );
+    }
+
+    function decrementSetCount(id: string) {
+        setProgram((prevExercises) =>
+            prevExercises.map((prevExercise) =>
+                prevExercise.id === id && "sets" in prevExercise
+                    ? {
+                          ...prevExercise,
+                          sets:
+                              prevExercise.sets.length === 1
+                                  ? prevExercise.sets
+                                  : prevExercise.sets.slice(0, -1),
+                      }
+                    : prevExercise
+            )
+        );
+    }
+
+    /* <-- Superset Handlers -->*/
+
     return (
         <>
-            {exerciseList.map((exercise, rowIndex) => (
-                <div
-                    key={rowIndex}
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        margin: "10px 0",
-                    }}
-                >
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        <MovementChevrons
-                            id={exercise.id}
-                            list={exerciseList}
-                            setList={setExerciseList}
-                        />
-                        <input
-                            style={{ border: "1.6px solid black" }}
-                            value={exercise.name}
-                            onChange={(event) =>
-                                editExerciseName(
-                                    exercise.id,
-                                    event.target.value
-                                )
-                            }
-                        />
-                        <button
-                            type="button"
-                            className="icon-button"
+            {program.map((exercise, rowIndex) => (
+                <div>
+                    {"sets" in exercise ? (
+                        <div
+                            key={rowIndex}
                             style={{
-                                backgroundColor: "transparent",
-                                border: "none",
+                                display: "flex",
+                                flexDirection: "column",
+                                margin: "10px 0",
                             }}
-                            onClick={() => removeExercise(exercise.id)}
                         >
-                            <Trash color="#da3633" />
-                        </button>
-                    </div>
-                    <div>
-                        {exercise.sets.map((set, setIndex) => (
                             <div
-                                key={setIndex}
                                 style={{
                                     display: "flex",
                                     justifyContent: "space-between",
-                                    margin: "2.5px 0",
-                                    gap: "2.5px",
+                                    alignItems: "center",
                                 }}
                             >
-                                <label
+                                <MovementChevrons
+                                    id={exercise.id}
+                                    list={program}
+                                    setList={setProgram}
+                                />
+                                <input
+                                    style={{ border: "1.6px solid black" }}
+                                    value={exercise.name}
+                                    onChange={(event) =>
+                                        editExerciseName(
+                                            exercise.id,
+                                            event.target.value
+                                        )
+                                    }
+                                />
+                                <button
+                                    type="button"
+                                    className="icon-button"
                                     style={{
-                                        fontSize: "12px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "4px",
-                                        fontWeight: "bold",
-                                        width: "50%",
-                                        textAlign: "left",
+                                        backgroundColor: "transparent",
+                                        border: "none",
                                     }}
+                                    onClick={() => removeExercise(exercise.id)}
                                 >
-                                    weight (kg)
-                                    <input
-                                        type="text"
-                                        value={set.weight}
-                                        placeholder="weight (kg)"
-                                        onChange={(event) => {
-                                            editExerciseWeight(
-                                                exercise.id,
-                                                setIndex,
-                                                Number(event.target.value)
-                                            );
-                                        }}
-                                    />
-                                </label>
-                                <label
-                                    style={{
-                                        fontSize: "12px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "4px",
-                                        fontWeight: "bold",
-                                        width: "50%",
-                                        textAlign: "left",
-                                    }}
-                                >
-                                    reps
-                                    <input
-                                        type="text"
-                                        value={set.reps}
-                                        placeholder="reps"
-                                        onChange={(event) => {
-                                            editExerciseRep(
-                                                exercise.id,
-                                                setIndex,
-                                                Number(event.target.value)
-                                            );
-                                        }}
-                                    />
-                                </label>
+                                    <Trash color="#da3633" />
+                                </button>
                             </div>
-                        ))}
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "8px",
-                                padding: "12px 0 0 0",
-                            }}
-                        >
-                            <PlusCircle className="icon" color="#1e1e1e" />
-                            <input
-                                type="text"
-                                style={{
-                                    width: "15px",
-                                    textAlign: "center",
-                                    border: "1.6px solid #1e1e1e",
-                                }}
-                            />
-                            <MinusCircle className="icon" color="#1e1e1e" />
+                            <div>
+                                {exercise.sets.map((set, setIndex) => (
+                                    <div
+                                        key={setIndex}
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            margin: "2.5px 0",
+                                            gap: "2.5px",
+                                        }}
+                                    >
+                                        <label
+                                            style={{
+                                                fontSize: "12px",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                gap: "4px",
+                                                fontWeight: "bold",
+                                                width: "50%",
+                                                textAlign: "left",
+                                            }}
+                                        >
+                                            weight (kg)
+                                            <input
+                                                type="text"
+                                                value={set.weight}
+                                                placeholder="weight (kg)"
+                                                onChange={(event) => {
+                                                    editExerciseWeight(
+                                                        exercise.id,
+                                                        setIndex,
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                }}
+                                            />
+                                        </label>
+                                        <label
+                                            style={{
+                                                fontSize: "12px",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                gap: "4px",
+                                                fontWeight: "bold",
+                                                width: "50%",
+                                                textAlign: "left",
+                                            }}
+                                        >
+                                            reps
+                                            <input
+                                                type="text"
+                                                value={set.reps}
+                                                placeholder="reps"
+                                                onChange={(event) => {
+                                                    editExerciseRep(
+                                                        exercise.id,
+                                                        setIndex,
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                }}
+                                            />
+                                        </label>
+                                    </div>
+                                ))}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "8px",
+                                        padding: "12px 0 0 0",
+                                    }}
+                                >
+                                    <PlusCircle
+                                        className="icon"
+                                        color="#1e1e1e"
+                                        onClick={() =>
+                                            incrementSetCount(exercise.id)
+                                        }
+                                    />
+                                    <input
+                                        type="text"
+                                        disabled={true}
+                                        value={exercise.sets.length}
+                                        style={{
+                                            width: "15px",
+                                            textAlign: "center",
+                                            border: "1.6px solid #1e1e1e",
+                                        }}
+                                    />
+                                    <MinusCircle
+                                        className="icon"
+                                        color="#1e1e1e"
+                                        onClick={() =>
+                                            decrementSetCount(exercise.id)
+                                        }
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
                 </div>
             ))}
             <div style={{ display: "flex", flexDirection: "column" }}>

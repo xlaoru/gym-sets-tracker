@@ -41,8 +41,8 @@ export interface IProgramFormPageProps {
 }
 
 export interface IExerciseSetInputsProps {
-    exerciseList: IExercise[];
-    setExerciseList: React.Dispatch<React.SetStateAction<IExercise[]>>;
+    program: TProgram[];
+    setProgram: React.Dispatch<React.SetStateAction<TProgram[]>>;
     setPreEditInfo?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -55,8 +55,8 @@ export interface IExerciseNameInputsProps {
 
 export interface IMovementChevronsProps {
     id: string;
-    list: IExercise[];
-    setList: React.Dispatch<React.SetStateAction<IExercise[]>>;
+    list: TProgram[];
+    setList: React.Dispatch<React.SetStateAction<TProgram[]>>;
 }
 
 export interface IHeaderProps {

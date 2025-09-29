@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { createProgram } from "../store/ProgramSlice";
 
 export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
-    const navigate = useNavigate()
+    /*const navigate = useNavigate()
 
     const dispatch: AppDispatch = useDispatch()
 
@@ -58,11 +58,11 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
             setLoading(false)
             setPreEditInfo(true)
         })
-    }
+    }*/
 
     return (
         <div className="container-absolute-center">
-            {
+            {/*{
                 isLoading
                     ? <Loader />
                     : <form className="form" onSubmit={handleSubmit}>
@@ -73,7 +73,7 @@ export default function PreEditPage({ setPreEditInfo }: IPreEditPageProps) {
                         />
                         <ExerciseSetInputs exerciseList={exerciseList} setExerciseList={setExerciseList} />
                     </form>
-            }
+            }*/}
         </div>
     );
 }
