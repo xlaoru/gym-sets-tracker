@@ -13,6 +13,7 @@ export interface IExercise {
     id: string;
     name: string;
     sets: ExerciseSet[];
+    checked: boolean;
 }
 
 export interface ISuperset {
