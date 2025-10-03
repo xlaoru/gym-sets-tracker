@@ -206,6 +206,10 @@ export default function ExerciseSetInputs({
             }
         }
 
+        if (checkedExerciseIds.length < 2) {
+            return;
+        }
+
         const newSuperset: ISuperset = {
             id: crypto.randomUUID(),
             name: supersetName,
@@ -316,9 +320,9 @@ export default function ExerciseSetInputs({
             ],
         };
 
-        /*if (updatedCurrentSuperset.exercises.length === 1) {
+        if (updatedCurrentSuperset.exercises.length === 1) {
             return;
-        }*/
+        }
 
         const transferredIds = checkedExercises.map((exercise) => exercise.id);
 
@@ -547,7 +551,10 @@ export default function ExerciseSetInputs({
                                     style={{
                                         display: "flex",
                                         flexDirection: "column",
-                                        margin: "10px 0",
+                                        margin: "5px 0",
+                                        padding: "10px",
+                                        border: "2.5px solid #1e1e1e",
+                                        borderRadius: "4px",
                                     }}
                                 >
                                     <div
