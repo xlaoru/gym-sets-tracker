@@ -723,9 +723,9 @@ export default function ExerciseSetInputs({
                                         }}
                                     >
                                         <MovementChevrons
-                                            id={"test1"}
-                                            list={[]}
-                                            setList={() => {}}
+                                            id={exercise.id}
+                                            list={program}
+                                            setList={setProgram}
                                         />
                                         <input
                                             style={{
@@ -882,6 +882,41 @@ export default function ExerciseSetInputs({
                                                                 </div>
                                                             )
                                                         )}
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "center",
+                                                            alignItems:
+                                                                "center",
+                                                            gap: "8px",
+                                                            padding:
+                                                                "12px 0 0 0",
+                                                        }}
+                                                    >
+                                                        <PlusCircle
+                                                            className="icon"
+                                                            color="#1e1e1e"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            disabled={true}
+                                                            value={
+                                                                subExercise.sets
+                                                                    .length
+                                                            }
+                                                            style={{
+                                                                width: "15px",
+                                                                textAlign:
+                                                                    "center",
+                                                                border: "1.6px solid #1e1e1e",
+                                                            }}
+                                                        />
+                                                        <MinusCircle
+                                                            className="icon"
+                                                            color="#1e1e1e"
+                                                        />
                                                     </div>
                                                 </div>
                                             )
