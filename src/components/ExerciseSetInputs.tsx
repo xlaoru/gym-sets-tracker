@@ -363,6 +363,118 @@ export default function ExerciseSetInputs({
         );
     }
 
+    function editSubExerciseName(id: string, text: string) {
+        setProgram((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if ("exercises" in exercise) {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.map((subExercise) => {
+                            if (subExercise.id === id) {
+                                return { ...subExercise, name: text };
+                            }
+
+                            return subExercise;
+                        }),
+                    };
+                }
+
+                return exercise;
+            })
+        );
+    }
+
+    function removeSubExercise(id: string) {
+        setProgram((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if ("exercises" in exercise) {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.filter((subExercise) => {
+                            return subExercise.id !== id;
+                        }),
+                    };
+                }
+
+                return exercise;
+            })
+        );
+    }
+
+    function editSubExerciseWeight(id: string, index: number, weights: number) {
+        setProgram((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if ("exercises" in exercise) {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.map((subExercises) => {
+                            if (subExercises.id === id) {
+                                return {
+                                    ...subExercises,
+                                    sets: subExercises.sets.map(
+                                        (set, setIndex) => {
+                                            if (setIndex === index) {
+                                                return {
+                                                    ...set,
+                                                    weight: weights,
+                                                };
+                                            }
+
+                                            return set;
+                                        }
+                                    ),
+                                };
+                            }
+
+                            return subExercises;
+                        }),
+                    };
+                }
+
+                return exercise;
+            })
+        );
+    }
+
+    function editSubExerciseRep(id: string, index: number, reps: number) {
+        setProgram((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if ("exercises" in exercise) {
+                    return {
+                        ...exercise,
+                        exercises: exercise.exercises.map((subExercises) => {
+                            if (subExercises.id === id) {
+                                return {
+                                    ...subExercises,
+                                    sets: subExercises.sets.map(
+                                        (set, setIndex) => {
+                                            if (setIndex === index) {
+                                                return {
+                                                    ...set,
+                                                    reps: reps,
+                                                };
+                                            }
+
+                                            return set;
+                                        }
+                                    ),
+                                };
+                            }
+
+                            return subExercises;
+                        }),
+                    };
+                }
+
+                return exercise;
+            })
+        );
+    }
+
+    function incrementSubExerciseSetCount(id: string) {}
+
+    function decrementSubExerciseSetCount(id: string) {}
+
     /* <-- Data Displaying --> */
 
     function renderTable() {
@@ -756,6 +868,9 @@ export default function ExerciseSetInputs({
                                                         "transparent",
                                                     border: "none",
                                                 }}
+                                                onClick={() =>
+                                                    removeExercise(exercise.id)
+                                                }
                                             >
                                                 <Trash color="#da3633" />
                                             </button>
@@ -782,17 +897,19 @@ export default function ExerciseSetInputs({
                                                                 "center",
                                                         }}
                                                     >
-                                                        <MovementChevrons
-                                                            id={"test2"}
-                                                            list={[]}
-                                                            setList={() => {}}
-                                                        />
                                                         <input
                                                             style={{
                                                                 border: "1.6px solid black",
                                                             }}
                                                             value={
                                                                 subExercise.name
+                                                            }
+                                                            onChange={(event) =>
+                                                                editSubExerciseName(
+                                                                    subExercise.id,
+                                                                    event.target
+                                                                        .value
+                                                                )
                                                             }
                                                         />
                                                         <button
@@ -804,7 +921,7 @@ export default function ExerciseSetInputs({
                                                                 border: "none",
                                                             }}
                                                             onClick={() =>
-                                                                removeExercise(
+                                                                removeSubExercise(
                                                                     subExercise.id
                                                                 )
                                                             }
@@ -851,6 +968,19 @@ export default function ExerciseSetInputs({
                                                                             value={
                                                                                 set.weight
                                                                             }
+                                                                            onChange={(
+                                                                                event
+                                                                            ) =>
+                                                                                editSubExerciseWeight(
+                                                                                    subExercise.id,
+                                                                                    setIndex,
+                                                                                    Number(
+                                                                                        event
+                                                                                            .target
+                                                                                            .value
+                                                                                    )
+                                                                                )
+                                                                            }
                                                                             placeholder="weight (kg)"
                                                                         />
                                                                     </label>
@@ -875,6 +1005,19 @@ export default function ExerciseSetInputs({
                                                                             type="text"
                                                                             value={
                                                                                 set.reps
+                                                                            }
+                                                                            onChange={(
+                                                                                event
+                                                                            ) =>
+                                                                                editSubExerciseRep(
+                                                                                    subExercise.id,
+                                                                                    setIndex,
+                                                                                    Number(
+                                                                                        event
+                                                                                            .target
+                                                                                            .value
+                                                                                    )
+                                                                                )
                                                                             }
                                                                             placeholder="reps"
                                                                         />
