@@ -471,9 +471,67 @@ export default function ExerciseSetInputs({
         );
     }
 
-    function incrementSubExerciseSetCount(id: string) {}
+    function incrementSubExerciseSetCount(id: string, subId: string) {
+        setProgram((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if ("exercises" in exercise) {
+                    if (exercise.id === id) {
+                        return {
+                            ...exercise,
+                            exercises: exercise.exercises.map((subExercise) => {
+                                if (subExercise.id === subId) {
+                                    return {
+                                        ...subExercise,
+                                        sets: [
+                                            ...subExercise.sets,
+                                            { weight: 0, reps: 0 },
+                                        ],
+                                    };
+                                }
 
-    function decrementSubExerciseSetCount(id: string) {}
+                                return subExercise;
+                            }),
+                        };
+                    }
+
+                    return exercise;
+                }
+
+                return exercise;
+            })
+        );
+    }
+
+    function decrementSubExerciseSetCount(id: string, subId: string) {
+        setProgram((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if ("exercises" in exercise) {
+                    if (exercise.id === id) {
+                        return {
+                            ...exercise,
+                            exercises: exercise.exercises.map((subExercise) => {
+                                if (subExercise.id === subId) {
+                                    return {
+                                        ...subExercise,
+                                        sets:
+                                            subExercise.sets.length === 1
+                                                ? subExercise.sets
+                                                : subExercise.sets.slice(0, -1),
+                                    };
+                                }
+
+                                return subExercise;
+                            }),
+                        };
+                    }
+
+                    return exercise;
+                }
+
+                return exercise;
+            })
+        );
+    }
 
     /* <-- Data Displaying --> */
 
@@ -1041,6 +1099,12 @@ export default function ExerciseSetInputs({
                                                         <PlusCircle
                                                             className="icon"
                                                             color="#1e1e1e"
+                                                            onClick={() =>
+                                                                incrementSubExerciseSetCount(
+                                                                    exercise.id,
+                                                                    subExercise.id
+                                                                )
+                                                            }
                                                         />
                                                         <input
                                                             type="text"
@@ -1059,6 +1123,12 @@ export default function ExerciseSetInputs({
                                                         <MinusCircle
                                                             className="icon"
                                                             color="#1e1e1e"
+                                                            onClick={() =>
+                                                                decrementSubExerciseSetCount(
+                                                                    exercise.id,
+                                                                    subExercise.id
+                                                                )
+                                                            }
                                                         />
                                                     </div>
                                                 </div>
