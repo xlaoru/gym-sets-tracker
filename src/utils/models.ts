@@ -54,9 +54,15 @@ export interface IExerciseNameInputsProps {
     setPreEditInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export interface IMovementChevronsProps {
+export interface IExerciseChevronsProps {
     id: string;
     list: TProgram[];
+    setList: React.Dispatch<React.SetStateAction<TProgram[]>>;
+}
+
+export interface ISubExerciseChevronsProps {
+    id: string;
+    superset: ISuperset;
     setList: React.Dispatch<React.SetStateAction<TProgram[]>>;
 }
 

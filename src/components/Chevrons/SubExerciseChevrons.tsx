@@ -1,38 +1,60 @@
+import { IExercise, ISubExerciseChevronsProps } from "../../utils/models";
+import { useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-import { IMovementChevronsProps } from "../utils/models";
-
-export default function MovementChevrons({
+export default function SubExerciseChevrons({
     id,
-    list,
+    superset,
     setList,
-}: IMovementChevronsProps) {
-    const currentIndex = list.findIndex((item) => item.id === id);
+}: ISubExerciseChevronsProps) {
+    const currentIndex = superset.exercises.findIndex(
+        (item: IExercise) => item.id === id
+    );
 
-    function moveExerciseUp(index: number) {
+    function moveSubExerciseUp(index: number) {
         if (index === 0) return;
 
-        const newList = [...list];
+        const newList = [...superset.exercises];
         const temp = newList[index - 1];
         newList[index - 1] = newList[index];
         newList[index] = temp;
 
-        setList(newList);
+        setList((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if (superset.id === exercise.id) {
+                    return {
+                        ...exercise,
+                        exercises: newList,
+                    };
+                }
+                return exercise;
+            })
+        );
     }
 
-    function moveExerciseDown(index: number) {
-        if (index === list.length - 1) return;
+    function moveSubExerciseDown(index: number) {
+        if (index === superset.exercises.length - 1) return;
 
-        const newList = [...list];
+        const newList = [...superset.exercises];
         const temp = newList[index + 1];
         newList[index + 1] = newList[index];
         newList[index] = temp;
 
-        setList(newList);
+        setList((prevExercises) =>
+            prevExercises.map((exercise) => {
+                if (superset.id === exercise.id) {
+                    return {
+                        ...exercise,
+                        exercises: newList,
+                    };
+                }
+                return exercise;
+            })
+        );
     }
 
     function renderChevrons() {
-        if (list.length === 1) {
+        if (superset.exercises.length === 1) {
             return null;
         }
 
@@ -47,7 +69,7 @@ export default function MovementChevrons({
                     }}
                 >
                     <button
-                        onClick={() => moveExerciseDown(currentIndex)}
+                        onClick={() => moveSubExerciseDown(currentIndex)}
                         type="button"
                         className="icon-button"
                         style={{
@@ -61,7 +83,7 @@ export default function MovementChevrons({
                     </button>
                 </div>
             );
-        } else if (currentIndex === list.length - 1) {
+        } else if (currentIndex === superset.exercises.length - 1) {
             return (
                 <div
                     style={{
@@ -72,7 +94,7 @@ export default function MovementChevrons({
                     }}
                 >
                     <button
-                        onClick={() => moveExerciseUp(currentIndex)}
+                        onClick={() => moveSubExerciseUp(currentIndex)}
                         type="button"
                         className="icon-button"
                         style={{
@@ -97,7 +119,7 @@ export default function MovementChevrons({
                     }}
                 >
                     <button
-                        onClick={() => moveExerciseUp(currentIndex)}
+                        onClick={() => moveSubExerciseUp(currentIndex)}
                         type="button"
                         className="icon-button"
                         style={{
@@ -110,7 +132,7 @@ export default function MovementChevrons({
                         <ChevronUp size="18px" />
                     </button>
                     <button
-                        onClick={() => moveExerciseDown(currentIndex)}
+                        onClick={() => moveSubExerciseDown(currentIndex)}
                         type="button"
                         className="icon-button"
                         style={{

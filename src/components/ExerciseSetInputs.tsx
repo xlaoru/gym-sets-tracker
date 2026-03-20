@@ -4,7 +4,8 @@ import { IExercise, IExerciseSetInputsProps, ISuperset } from "../utils/models";
 import { Program } from "../utils/models";
 
 import { MinusCircle, Pencil, PlusCircle, Trash } from "lucide-react";
-import MovementChevrons from "./MovementChevrons";
+import ExerciseChevrons from "./Chevrons/ExerciseChevrons";
+import SubExerciseChevrons from "./Chevrons/SubExerciseChevrons";
 
 export default function ExerciseSetInputs({
     program,
@@ -734,7 +735,7 @@ export default function ExerciseSetInputs({
                                             alignItems: "center",
                                         }}
                                     >
-                                        <MovementChevrons
+                                        <ExerciseChevrons
                                             id={exercise.id}
                                             list={program}
                                             setList={setProgram}
@@ -892,7 +893,7 @@ export default function ExerciseSetInputs({
                                             alignItems: "center",
                                         }}
                                     >
-                                        <MovementChevrons
+                                        <ExerciseChevrons
                                             id={exercise.id}
                                             list={program}
                                             setList={setProgram}
@@ -955,6 +956,11 @@ export default function ExerciseSetInputs({
                                                                 "center",
                                                         }}
                                                     >
+                                                        <SubExerciseChevrons
+                                                            id={subExercise.id}
+                                                            superset={exercise}
+                                                            setList={setProgram}
+                                                        />
                                                         <input
                                                             style={{
                                                                 border: "1.6px solid black",
